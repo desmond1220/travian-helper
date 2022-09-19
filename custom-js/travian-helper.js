@@ -254,9 +254,12 @@ function getCurrentPageType() {
 function getCurrentVillageId() {
   const params = new URLSearchParams(window.location.search);
   const villageId = params.get("newdid");
-  setState(VILLAGE_ID_KEY, villageId)
 
-  return villageId;
+  if (villageId) {
+    setState(VILLAGE_ID_KEY, villageId)
+  }
+
+  return getState(VILLAGE_ID_KEY);
 }
 
 async function render() {
