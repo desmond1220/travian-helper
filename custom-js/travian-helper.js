@@ -133,7 +133,7 @@ function addCurrentBuildingToPending() {
   let metalReq = parseIntIgnoreSep(resourceRequirementEle[2].innerText);
   let grassReq = parseIntIgnoreSep(resourceRequirementEle[3].innerText);
 
-  const pendingBuildList = pendingBuildState[villageId]
+  const pendingBuildList = pendingBuildState[villageId] || []
   pendingBuildList.push({
     id,
     gid,
@@ -143,6 +143,7 @@ function addCurrentBuildingToPending() {
     grassReq,
   });
 
+  pendingBuildState[villageId] = pendingBuildList
   setState(PENDING_BUILD_LIST_STATE, pendingBuildState);
   render();
 }
@@ -150,9 +151,10 @@ function addCurrentBuildingToPending() {
 function removeFromPending(i, rerender) {
   let pendingBuildState = getState(PENDING_BUILD_LIST_STATE, {});
   let villageId = getState(VILLAGE_ID_KEY, "")
-  const pendingBuildList = pendingBuildState[villageId]
+  const pendingBuildList = pendingBuildState[villageId] || []
 
   pendingBuildList.splice(i, 1);
+  pendingBuildState[villageId] = pendingBuildList
   setState(PENDING_BUILD_LIST_STATE, pendingBuildState);
   if (rerender) render();
 }
@@ -166,7 +168,7 @@ function toggleAutoBuild() {
 async function tryBuild(buildingList, wood, brick, metal, grass) {
   let pendingBuildState = getState(PENDING_BUILD_LIST_STATE, {});
   let villageId = getState(VILLAGE_ID_KEY, "")
-  let pendingBuildList = pendingBuildState[villageId]
+  let pendingBuildList = pendingBuildState[villageId] || []
   if (!pendingBuildList.length) return;
 
   let type = getCurrentPageType();
@@ -261,7 +263,7 @@ async function render() {
   let pageType = getCurrentPageType();
   let villageId = getCurrentVillageId();
   let pendingBuildState = getState(PENDING_BUILD_LIST_STATE, {});
-  let pendingBuildList = pendingBuildState[villageId]
+  let pendingBuildList = pendingBuildState[villageId] || []
 
   let enableAutoBuild = getState(ENABLE_AUTO_BUILD_KEY, false);
 
