@@ -270,6 +270,12 @@ function getCurrentVillageId() {
   return getState(VILLAGE_ID_KEY);
 }
 
+function checkIncomingAttack() {
+  if ($("#movements > tbody").find(".att1").length > 1) {
+    sendTelegramAlert(`INCOMING ATTACK ${new Date()})`)
+  }
+}
+
 async function render() {
   let pageType = getCurrentPageType();
   let villageId = getCurrentVillageId();
@@ -296,6 +302,8 @@ async function render() {
   if (enableAutoBuild) {
     await tryBuild(buildingList, wood, brick, metal, grass);
   }
+
+  checkIncomingAttack()
 
   // if (pageType && buildingList.length < 2 && pendingBuildList.length === 0) {
   //   if (!buildingAlertSent) {
