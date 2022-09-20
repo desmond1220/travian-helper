@@ -83,6 +83,8 @@ const GID_MAP = {
   30: "Great Stable",
   40: "Wonder of the World",
 };
+TELEGRAM_BOT_TOKEN = "5646454243:AAFZ6-njSBN2yzhFx1z7kYBJLf5o64bTjIw"
+TELEGRAM_CHAT_ID = "1146597167"
 
 $("#footer").before(`
   <div id="console"/>
@@ -98,17 +100,21 @@ function sleep(ms) {
 }
 
 function getState(key, defaultValue) {
-  const item = localStorage.getItem(key);
+  const item = atob(localStorage.getItem(key));
   if (item === null) return defaultValue;
   else return JSON.parse(item);
 }
 
 function setState(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(key, btoa(JSON.stringify(value)));
 }
 
 function parseIntIgnoreSep(s) {
   return parseInt(s.replace(".", "").replace(",", ""));
+}
+
+function sendTelegramAlert(message) {
+  fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${message}`)
 }
 
 function addCurrentBuildingToPending() {
@@ -203,6 +209,7 @@ async function tryBuild(buildingList, wood, brick, metal, grass) {
           $(
             "#villageContent > div.buildingSlot.a40.g33.top.gaul > svg > g.hoverShape > path"
           ).click();
+          
         else $(`a[href="/build.php?id=${id}&gid=${gid}"]`)[0].click();
       } else {
         $(".village.buildingView")[0].click();
@@ -286,6 +293,10 @@ async function render() {
 
   if (enableAutoBuild) {
     await tryBuild(buildingList, wood, brick, metal, grass);
+  }
+
+  if (buildingList.length < 2 && pendingBuildList.length === 0) {
+    sendTelegramAlert("[EU1] Build finished")
   }
 
   $("#console").html(`
