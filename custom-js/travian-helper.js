@@ -297,7 +297,7 @@ async function render() {
     await tryBuild(buildingList, wood, brick, metal, grass);
   }
 
-  if (buildingList.length < 2 && pendingBuildList.length === 0) {
+  if (pageType && buildingList.length < 2 && pendingBuildList.length === 0) {
     if (!buildingAlertSent) {
       sendTelegramAlert("[EU1] Build finished")
       setState(BUILDING_ALERT_SENT_KEY, true)
