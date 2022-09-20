@@ -33,6 +33,7 @@ document.head.append(style);
 
 const PENDING_BUILD_LIST_STATE = "pendingBuildState";
 const ENABLE_AUTO_BUILD_KEY = "enableAutoBuild";
+const BUILDING_ALERT_SENT_KEY = "buildingAlertSent";
 const VILLAGE_ID_KEY = "villageId";
 const BUILDING_PAGE = "Building";
 const TOWN_PAGE = "Town";
@@ -100,13 +101,13 @@ function sleep(ms) {
 }
 
 function getState(key, defaultValue) {
-  const item = atob(localStorage.getItem(key));
+  const item = localStorage.getItem(key);
   if (item === null) return defaultValue;
   else return JSON.parse(item);
 }
 
 function setState(key, value) {
-  localStorage.setItem(key, btoa(JSON.stringify(value)));
+  localStorage.setItem(key, JSON.stringify(value));
 }
 
 function parseIntIgnoreSep(s) {
@@ -274,6 +275,7 @@ async function render() {
   let villageId = getCurrentVillageId();
   let pendingBuildState = getState(PENDING_BUILD_LIST_STATE, {});
   let pendingBuildList = pendingBuildState[villageId] || []
+  let buildingAlertSent = getState(BUILDING_ALERT_SENT_KEY, false);
 
   let enableAutoBuild = getState(ENABLE_AUTO_BUILD_KEY, false);
 
@@ -296,7 +298,12 @@ async function render() {
   }
 
   if (buildingList.length < 2 && pendingBuildList.length === 0) {
-    sendTelegramAlert("[EU1] Build finished")
+    if (!buildingAlertSent) {
+      sendTelegramAlert("[EU1] Build finished")
+      setState(BUILDING_ALERT_SENT_KEY, true)
+    }
+  } else {
+    setState(BUILDING_ALERT_SENT_KEY, false)
   }
 
   $("#console").html(`
