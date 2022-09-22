@@ -95,6 +95,7 @@ const VILLAGES_LIST = [
     "selector": "#sidebarBoxVillagelist > div.content > div.villageList > div:nth-child(2) > div > a"
   }
 ]
+const villageChangeTimeout = randInt(5*60*1000, 15*60*1000)
 
 const TELEGRAM_BOT_TOKEN = "5646454243:AAFZ6-njSBN2yzhFx1z7kYBJLf5o64bTjIw"
 const TELEGRAM_CHAT_ID = "1146597167"
@@ -336,6 +337,8 @@ async function render() {
         <div>Village ID: ${villageId || "Unknown"}</div>
         <div>Wood: ${wood} Brick: ${brick} Metal: ${metal} Grass: ${grass}</div>
         <br />
+        <div>Will change village after ${villageChangeTimeout}ms</div>
+        <br />
         ${buildingList.map((e) => `<div>${e.name} ${e.time}</div>`).join("")}
       </div>
       <div class="flex">
@@ -376,6 +379,4 @@ const changeVillage = () => {
 render();
 setInterval(render, 30000);
 
-const villageChangeTimeout = randInt(5*60*1000, 15*60*1000)
-console.log(`Will change village after ${villageChangeTimeout}ms`)
 setTimeout(changeVillage, villageChangeTimeout)
