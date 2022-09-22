@@ -84,6 +84,16 @@ const GID_MAP = {
   30: "Great Stable",
   40: "Wonder of the World",
 };
+const VILLAGES_LIST = [
+  {
+    "id": "9739",
+    "selector": "#sidebarBoxVillagelist > div.content > div.villageList > div:nth-child(1) > div > a"
+  }, 
+  {
+    "id": "13110",
+    "selector": "#sidebarBoxVillagelist > div.content > div.villageList > div:nth-child(2) > div > a"
+  }
+]
 TELEGRAM_BOT_TOKEN = "5646454243:AAFZ6-njSBN2yzhFx1z7kYBJLf5o64bTjIw"
 TELEGRAM_CHAT_ID = "1146597167"
 
@@ -351,5 +361,16 @@ async function render() {
   `);
 }
 
+const changeVillage = () => {
+  let enableAutoBuild = getState(ENABLE_AUTO_BUILD_KEY, false);
+  let currentVillage = getState(VILLAGE_ID_KEY, undefined);
+
+  if (enableAutoBuild && currentVillage) {
+    const villageSelector = $(VILLAGES_LIST.find(v => v.id !== currentVillage).selector)
+    villageSelector.click()
+  }
+}
+
 render();
 setInterval(render, 30000);
+setTimeout(changeVillage, randInt(45, 90))
