@@ -84,6 +84,7 @@ const GID_MAP = {
   30: "Great Stable",
   40: "Wonder of the World",
 };
+
 const VILLAGES_LIST = [
   {
     "id": "9739",
@@ -94,8 +95,9 @@ const VILLAGES_LIST = [
     "selector": "#sidebarBoxVillagelist > div.content > div.villageList > div:nth-child(2) > div > a"
   }
 ]
-TELEGRAM_BOT_TOKEN = "5646454243:AAFZ6-njSBN2yzhFx1z7kYBJLf5o64bTjIw"
-TELEGRAM_CHAT_ID = "1146597167"
+
+const TELEGRAM_BOT_TOKEN = "5646454243:AAFZ6-njSBN2yzhFx1z7kYBJLf5o64bTjIw"
+const TELEGRAM_CHAT_ID = "1146597167"
 
 $("#footer").before(`
   <div id="console"/>
@@ -367,10 +369,13 @@ const changeVillage = () => {
 
   if (enableAutoBuild && currentVillage) {
     const villageSelector = $(VILLAGES_LIST.find(v => v.id !== currentVillage).selector)
-    villageSelector.click()
+    villageSelector[0].click()
   }
 }
 
 render();
 setInterval(render, 30000);
-setTimeout(changeVillage, randInt(5*60, 15*60))
+
+const villageChangeTimeout = randInt(5*60*1000, 15*60*1000)
+console.log(`Will change village after ${villageChangeTimeout}ms`)
+setTimeout(changeVillage, villageChangeTimeout)
