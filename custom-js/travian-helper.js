@@ -373,4 +373,4 @@ const changeVillage = () => {
 
 render();
 setInterval(render, 30000);
-setTimeout(changeVillage, randInt(45, 90))
+setTimeout(changeVillage, randInt(5*60, 15*60))
