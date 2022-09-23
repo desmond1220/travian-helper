@@ -195,7 +195,7 @@ async function tryBuild(buildingList, wood, brick, metal, grass) {
 
   if (
     (type === RESOURCE_FIELD_PAGE || type === TOWN_PAGE) &&
-    buildingList.length < 2
+    buildingList.length < 1
   ) {
     let id = pendingBuildList[0].id;
     let gid = pendingBuildList[0].gid;
