@@ -337,7 +337,7 @@ async function render() {
         <div>Village ID: ${villageId || "Unknown"}</div>
         <div>Wood: ${wood} Brick: ${brick} Metal: ${metal} Grass: ${grass}</div>
         <br />
-        <div>Will change village after ${villageChangeTimeout}ms</div>
+        <div>Will change village after ${villageChangeTimeout/1000/60}mins</div>
         <br />
         ${buildingList.map((e) => `<div>${e.name} ${e.time}</div>`).join("")}
       </div>
