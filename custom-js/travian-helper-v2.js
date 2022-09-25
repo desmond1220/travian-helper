@@ -714,7 +714,7 @@ const farm = (state) =>
           new Date(),
           0,
           Utils.randInt(30, 45),
-          0
+          Utils.randInt(0, 59)
         );
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
         return;
@@ -745,7 +745,7 @@ const nextVillage = (state) =>
         new Date(),
         0,
         Utils.randInt(5, 10),
-        0
+        Utils.randInt(0, 59)
       );
       let earliestVillageId = Object.keys(state.villages)[0];
       Object.values(state.villages).forEach((village) => {
