@@ -713,7 +713,7 @@ const farm = (state) =>
         state.nextFarmTime = Utils.addToDate(
           new Date(),
           0,
-          Utils.randInt(30, 40),
+          Utils.randInt(30, 60),
           0
         );
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
@@ -862,8 +862,8 @@ const render = (state) => {
                     `
                       )
                       .join("")}
+                      <br/>
                     <div class="flex-row">
-                    <br/>
                         <h5>Pending build tasks</h5> 
                         ${
                           state.currentPage === CurrentPageEnum.BUILDING &&
