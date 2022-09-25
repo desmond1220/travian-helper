@@ -141,8 +141,8 @@ StateHandler.INITIAL_STATE = {
   },
   nextVillageRotationTime: new Date(),
   nextFarmTime: new Date(),
-  telegramChatId: localStorage.getItem("telegramChatId") || "",
-  telegramToken: localStorage.getItem("telegramToken") || "",
+  telegramChatId: "",
+  telegramToken: "",
   username: "",
   password: "",
 };
