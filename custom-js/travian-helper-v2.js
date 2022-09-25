@@ -141,8 +141,8 @@ StateHandler.INITIAL_STATE = {
   },
   nextVillageRotationTime: new Date(),
   nextFarmTime: new Date(),
-  telegramChatId: "",
-  telegramToken: "",
+  telegramChatId: localStorage.getItem("telegramChatId") || "",
+  telegramToken: localStorage.getItem("telegramToken") || "",
   username: "",
   password: "",
 };
@@ -825,6 +825,8 @@ const render = (state) => {
             )}</div>
             <div>Next farm: ${Utils.formatDate(state.nextFarmTime)}</div>
         </div>
+        <br/>
+        <br/>
         <div class="flex-row">
             ${Object.entries(villages)
               .map(
@@ -842,12 +844,14 @@ const render = (state) => {
                     <div>Empty build queue alert backoff: ${Utils.formatDate(
                       village.emptyBuildQueueAlertBackoff
                     )}</div>
+                    <br/>
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${
                   village.resources.clay
                 } Iron: ${village.resources.iron} Crop: ${
                   village.resources.crop
                 }</div>
+                <br/>
                     <h5>Current build tasks</h5>
                     ${village.currentBuildTasks
                       .map(
@@ -859,6 +863,7 @@ const render = (state) => {
                       )
                       .join("")}
                     <div class="flex-row">
+                    <br/>
                         <h5>Pending build tasks</h5> 
                         ${
                           state.currentPage === CurrentPageEnum.BUILDING &&
@@ -878,6 +883,7 @@ const render = (state) => {
                     `
                       )
                       .join("")}
+                      <br/>
                     <h5>Incoming Troop Movements</h5>
                     ${village.incomingTroops
                       .map(
@@ -888,6 +894,7 @@ const render = (state) => {
                     `
                       )
                       .join("")}
+                      <br/>
                     <h5>Outgoing Troop Movements</h5>
                     ${village.outgoingTroops
                       .map(
