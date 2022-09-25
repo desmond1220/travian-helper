@@ -713,7 +713,7 @@ const farm = (state) =>
         state.nextFarmTime = Utils.addToDate(
           new Date(),
           0,
-          Utils.randInt(30, 60),
+          Utils.randInt(30, 45),
           0
         );
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
