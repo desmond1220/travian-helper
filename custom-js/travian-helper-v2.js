@@ -781,12 +781,12 @@ const farmWithHero = (state) =>
       ) {
         yield Utils.delayClick();
         const troopInputEle = $(
-          "#troops > tbody > tr:nth-child(2) > td:nth-child(2) > input"
+          'input[name="troop[t5]"]'
         );
         troopInputEle[0].click();
         troopInputEle[0].val("50");
         const heroInputEle = $(
-          "#troops > tbody > tr:nth-child(3) > td.line-last.column-last.small > input"
+          'input[name="troop[t11]"]'
         );
         heroInputEle[0].click();
         heroInputEle[0].val("1");
