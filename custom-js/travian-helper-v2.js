@@ -763,6 +763,7 @@ __awaiter(void 0, void 0, void 0, function* () {
       params.get("x") === "-166" &&
       params.get("y") === "-44"
     ) {yield Utils.delayClick();
+      state.feature.debug && console.log("In village position")
       const sendTroopsButtonEle = $('a[href="/build.php?gid=16&tt=2&eventType=5&targetMapId=97879"]');
       sendTroopsButtonEle[0].click()
       return;
