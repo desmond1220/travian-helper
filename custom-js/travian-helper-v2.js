@@ -808,13 +808,6 @@ const farmWithHero = (state) =>
         const confirmSendTroopsButtonEle = $("#checksum");
         confirmSendTroopsButtonEle[0].click();
 
-        state.nextFarmWithHeroTime = Utils.addToDate(
-          new Date(),
-          0,
-          Utils.randInt(20, 25),
-          Utils.randInt(0, 59)
-        );
-
         return;
       } else if (
         state.currentPage === CurrentPageEnum.BUILDING &&
@@ -822,6 +815,14 @@ const farmWithHero = (state) =>
         params.get("tt") === "1" && 
 	[CurrentActionEnum.FARM_WITH_HERO].includes(state.currentAction)
       ) {
+
+        state.nextFarmWithHeroTime = Utils.addToDate(
+          new Date(),
+          0,
+          Utils.randInt(20, 25),
+          Utils.randInt(0, 59)
+        );
+
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
         return;
       } else if (
