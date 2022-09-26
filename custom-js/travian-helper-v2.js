@@ -322,6 +322,7 @@ const updateCurrentPage = (state) => {
     }
     case "/position_details.php": {
       state.currentPage = CurrentPageEnum.VILLAGE_POSITION;
+      break;
     }
     case "/": {
       state.currentPage = CurrentPageEnum.LOGIN;
