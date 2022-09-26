@@ -808,10 +808,10 @@ __awaiter(void 0, void 0, void 0, function* () {
       $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
       return;
     } else if (state.currentPage === CurrentPageEnum.TOWN) {
-      yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.FARM);
+      yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.FARM_WITH_HERO);
       return;
     } else {
-      yield Navigation.goToTown(state, CurrentActionEnum.FARM);
+      yield Navigation.goToTown(state, CurrentActionEnum.FARM_WITH_HERO);
       return;
     }
   }
@@ -1127,7 +1127,7 @@ const run = (state) =>
           ) &&
           state.feature.autoFarmWithHero
         ) {
-          state.feature.debug && console.log("Attempting farm");
+          state.feature.debug && console.log("Attempting farm with hero");
           yield farmWithHero(state);
         }
         if (
