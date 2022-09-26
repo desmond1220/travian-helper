@@ -816,7 +816,7 @@ const farmWithHero = (state) =>
         );
 
         return;
-      } (
+      } else if (
         state.currentPage === CurrentPageEnum.BUILDING &&
         params.get("id") === "39" &&
         params.get("gid") === "16" &&
