@@ -780,19 +780,18 @@ const farmWithHero = (state) =>
         params.get("targetMapId") === "97879"
       ) {
         yield Utils.delayClick();
-        const troopInputEle = $(
-          'input[name="troop[t5]"]'
-        );
+        const troopInputEle = $('input[name="troop[t5]"]');
         troopInputEle[0].click();
         troopInputEle.val("50");
-        const heroInputEle = $(
-          'input[name="troop[t11]"]'
-        );
+        const heroInputEle = $('input[name="troop[t11]"]');
         heroInputEle[0].click();
         heroInputEle.val("1");
 
+        const raidRadioButtonEle = $('#build > div > form > div.option > label:nth-child(5) > input')
+        raidRadioButtonEle[0].click();
+
         yield Utils.delayClick();
-        const sendTroopsButtonEle = $('document.querySelector("#ok")');
+        const sendTroopsButtonEle = $('#ok');
         sendTroopsButtonEle[0].click();
         state.nextFarmTime = Utils.addToDate(
           new Date(),
