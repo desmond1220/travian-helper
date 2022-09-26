@@ -800,12 +800,6 @@ const farmWithHero = (state) =>
           Utils.randInt(0, 59)
         );
 
-        yield Navigation.goToVillage(
-          state,
-          "13110",
-          CurrentActionEnum.NAVIGATE_TO_FIELDS
-        );
-
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
 
         return;
@@ -819,6 +813,12 @@ const farmWithHero = (state) =>
         $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
         return;
       } else if (state.currentPage === CurrentPageEnum.TOWN) {
+        yield Navigation.goToVillage(
+          state,
+          "13110",
+          CurrentActionEnum.NAVIGATE_TO_FIELDS
+        );
+
         yield Navigation.goToBuilding(
           state,
           39,
