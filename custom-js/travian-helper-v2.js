@@ -87,6 +87,7 @@ var CurrentPageEnum;
   CurrentPageEnum["FIELDS"] = "FIELDS";
   CurrentPageEnum["TOWN"] = "TOWN";
   CurrentPageEnum["BUILDING"] = "BUILDING";
+  CurrentPageEnum["VILLAGE_POSITION"] = "VILLAGE_POSITION";
   CurrentPageEnum["UNKNOWN"] = "UNKNOWN";
 })(CurrentPageEnum || (CurrentPageEnum = {}));
 var CurrentActionEnum;
@@ -95,6 +96,7 @@ var CurrentActionEnum;
   CurrentActionEnum["BUILD"] = "BUILD";
   CurrentActionEnum["NAVIGATE_TO_FIELDS"] = "NAVIGATE_TO_FIELDS";
   CurrentActionEnum["FARM"] = "FARM";
+  CurrentActionEnum["FARM_WITH_HERO"] = "FARM_WITH_HERO"
 })(CurrentActionEnum || (CurrentActionEnum = {}));
 class StateHandler {
   constructor() {
@@ -137,10 +139,12 @@ StateHandler.INITIAL_STATE = {
     alertEmptyBuildQueue: false,
     alertResourceCapacityFull: false,
     autoFarm: false,
+    autoFarmWithHero: false,
     debug: false,
   },
   nextVillageRotationTime: new Date(),
   nextFarmTime: new Date(),
+  nextFarmWithHeroTime: new Date(),
   telegramChatId: "",
   telegramToken: "",
   username: "",
@@ -315,6 +319,9 @@ const updateCurrentPage = (state) => {
     case "/build.php": {
       state.currentPage = CurrentPageEnum.BUILDING;
       break;
+    }
+    case "/position_details.php": {
+      state.currentPage = CurrentPageEnum.VILLAGE_POSITION;
     }
     case "/": {
       state.currentPage = CurrentPageEnum.LOGIN;
@@ -736,6 +743,80 @@ const farm = (state) =>
       }
     }
   });
+const farmWithHero = (state) => 
+__awaiter(void 0, void 0, void 0, function* () {
+  if (new Date(state.nextFarmWithHeroTime) < new Date()) {
+    const params = new URLSearchParams(window.location.search);
+    if (
+      state.currentPage === CurrentPageEnum.BUILDING &&
+      params.get("id") === "39" &&
+      params.get("gid") === "16" &&
+      params.get("tt") === "99"
+    ) {
+      yield Utils.delayClick();
+      const targetButtonEle = $('a[href="/position_details.php?x=-166&y=-44"]');
+      targetButtonEle[0].click()
+      return;
+    } else if (
+      state.currentPage === CurrentPageEnum.VILLAGE_POSITION &&
+      params.get("x") === "-166" &&
+      params.get("y") === "-44"
+    ) {yield Utils.delayClick();
+      const sendTroopsButtonEle = $('href="/build.php?gid=16&tt=2&eventType=5&targetMapId=97879"');
+      sendTroopsButtonEle[0].click()
+      return;
+    } else if (
+      state.currentPage === CurrentPageEnum.BUILDING &&
+      params.get("gid") === "16" &&
+      params.get("tt") === "2" &&
+      params.get("eventType") === "5" && 
+      params.get("targetMapId") === "97879"
+    ) {yield Utils.delayClick();
+      const troopInputEle = $('#troops > tbody > tr:nth-child(2) > td:nth-child(2) > input');
+      troopInputEle[0].click()
+      troopInputEle[0].val("50")
+      const heroInputEle = $('#troops > tbody > tr:nth-child(3) > td.line-last.column-last.small > input');
+      heroInputEle[0].click()
+      heroInputEle[0].val("1")
+
+      yield Utils.delayClick();
+      const sendTroopsButtonEle = $('document.querySelector("#ok")');
+      sendTroopsButtonEle[0].click()
+      state.nextFarmTime = Utils.addToDate(
+        new Date(),
+        0,
+        Utils.randInt(20, 25),
+        Utils.randInt(0, 59)
+      );
+
+      yield Navigation.goToVillage(
+        state,
+        "13110",
+        CurrentActionEnum.NAVIGATE_TO_FIELDS
+      );
+      
+      yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
+
+      return;
+    } else if (
+      state.currentPage === CurrentPageEnum.BUILDING &&
+      params.get("id") === "39" &&
+      params.get("gid") === "16" &&
+      params.get("tt") !== "99"
+    ) {
+      yield Utils.delayClick();
+      $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
+      return;
+    } else if (state.currentPage === CurrentPageEnum.TOWN) {
+      yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.FARM);
+      return;
+    } else {
+      yield Navigation.goToTown(state, CurrentActionEnum.FARM);
+      return;
+    }
+  }
+});
+
 const nextVillage = (state) =>
   __awaiter(void 0, void 0, void 0, function* () {
     const nextRotationTime = new Date(state.nextVillageRotationTime);
@@ -801,6 +882,9 @@ const render = (state) => {
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${
               state.feature.autoFarm ? "checked" : ""
             }/> Auto farm
+            <input id="toggleAutoFarmWithHero" class="ml-5" type="checkbox" ${
+              state.feature.autoFarmWithHero ? "checked" : ""
+            }/> Auto farm with hero
             <input id="toggleAlertAttack" class="ml-5" type="checkbox" ${
               state.feature.alertAttack ? "checked" : ""
             }/> Alert attack
@@ -824,6 +908,7 @@ const render = (state) => {
               state.nextVillageRotationTime
             )}</div>
             <div>Next farm: ${Utils.formatDate(state.nextFarmTime)}</div>
+            <div>Next farm with hero: ${Utils.formatDate(state.nextFarmWithHeroTime)}</div>
         </div>
         <br/>
         <br/>
@@ -967,6 +1052,7 @@ const render = (state) => {
   handleFeatureToggle("#toggleAutoScan", state, "autoScan");
   handleFeatureToggle("#toggleAutoBuild", state, "autoBuild");
   handleFeatureToggle("#toggleAutoFarm", state, "autoFarm");
+  handleFeatureToggle("#toggleAutoFarmWithHero", state, "autoFarmWithHero");
   handleFeatureToggle("#toggleAlertAttack", state, "alertAttack");
   handleFeatureToggle(
     "#toggleAlertEmptyBuildQueue",
@@ -1029,10 +1115,20 @@ const run = (state) =>
         if (
           [CurrentActionEnum.IDLE, CurrentActionEnum.FARM].includes(
             state.currentAction
-          )
+          ) &&
+          state.feature.autoFarm
         ) {
           state.feature.debug && console.log("Attempting farm");
           yield farm(state);
+        }
+        if (
+          [CurrentActionEnum.IDLE, CurrentActionEnum.FARM_WITH_HERO].includes(
+            state.currentAction
+          ) &&
+          state.feature.autoFarmWithHero
+        ) {
+          state.feature.debug && console.log("Attempting farm");
+          yield farmWithHero(state);
         }
         if (
           state.currentAction === CurrentActionEnum.IDLE &&
