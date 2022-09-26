@@ -784,12 +784,12 @@ const farmWithHero = (state) =>
           'input[name="troop[t5]"]'
         );
         troopInputEle[0].click();
-        troopInputEle[0].val("50");
+        troopInputEle.val("50");
         const heroInputEle = $(
           'input[name="troop[t11]"]'
         );
         heroInputEle[0].click();
-        heroInputEle[0].val("1");
+        heroInputEle.val("1");
 
         yield Utils.delayClick();
         const sendTroopsButtonEle = $('document.querySelector("#ok")');
