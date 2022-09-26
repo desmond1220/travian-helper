@@ -818,7 +818,6 @@ const farmWithHero = (state) =>
         return;
       } else if (
         state.currentPage === CurrentPageEnum.BUILDING &&
-        params.get("id") === "39" &&
         params.get("gid") === "16" &&
         params.get("tt") === "1" && 
 	[CurrentActionEnum.FARM_WITH_HERO].includes(state.currentAction)
