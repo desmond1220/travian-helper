@@ -787,12 +787,27 @@ const farmWithHero = (state) =>
         heroInputEle[0].click();
         heroInputEle.val("1");
 
-        const raidRadioButtonEle = $('#build > div > form > div.option > label:nth-child(5) > input')
+        const raidRadioButtonEle = $(
+          "#build > div > form > div.option > label:nth-child(5) > input"
+        );
         raidRadioButtonEle[0].click();
 
         yield Utils.delayClick();
-        const sendTroopsButtonEle = $('#ok');
+        const sendTroopsButtonEle = $("#ok");
         sendTroopsButtonEle[0].click();
+
+        return;
+      } else if (
+        state.currentPage === CurrentPageEnum.BUILDING &&
+        params.get("gid") === "16" &&
+        params.get("tt") === "2" &&
+        !params.get("eventType") &&
+        !params.get("targetMapId")
+      ) {
+        yield Utils.delayClick();
+        const confirmSendTroopsButtonEle = $("#checksum");
+        confirmSendTroopsButtonEle[0].click();
+
         state.nextFarmTime = Utils.addToDate(
           new Date(),
           0,
