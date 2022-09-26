@@ -820,7 +820,8 @@ const farmWithHero = (state) =>
         state.currentPage === CurrentPageEnum.BUILDING &&
         params.get("id") === "39" &&
         params.get("gid") === "16" &&
-        params.get("tt") === "1"
+        params.get("tt") === "1" && 
+	[CurrentActionEnum.FARM_WITH_HERO].includes(state.currentAction)
       ) {
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
         return;
