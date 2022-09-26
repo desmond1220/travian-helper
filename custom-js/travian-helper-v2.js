@@ -813,18 +813,20 @@ const farmWithHero = (state) =>
         $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
         return;
       } else if (state.currentPage === CurrentPageEnum.TOWN) {
-        yield Navigation.goToVillage(
-          state,
-          "13110",
-          CurrentActionEnum.NAVIGATE_TO_FIELDS
-        );
-
-        yield Navigation.goToBuilding(
-          state,
-          39,
-          16,
-          CurrentActionEnum.FARM_WITH_HERO
-        );
+        if (state.currentVillageId !== "13110") {
+          yield Navigation.goToVillage(
+            state,
+            "13110",
+            CurrentActionEnum.FARM_WITH_HERO
+          );
+        } else {
+          yield Navigation.goToBuilding(
+            state,
+            39,
+            16,
+            CurrentActionEnum.FARM_WITH_HERO
+          );
+        }
         return;
       } else {
         yield Navigation.goToTown(state, CurrentActionEnum.FARM_WITH_HERO);
