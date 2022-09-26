@@ -806,7 +806,7 @@ const farmWithHero = (state) =>
       ) {
         yield Utils.delayClick();
         const confirmSendTroopsButtonEle = $("#checksum");
-        yield confirmSendTroopsButtonEle[0].click();
+        confirmSendTroopsButtonEle[0].click();
 
         state.nextFarmWithHeroTime = Utils.addToDate(
           new Date(),
@@ -815,8 +815,14 @@ const farmWithHero = (state) =>
           Utils.randInt(0, 59)
         );
 
+        return;
+      } (
+        state.currentPage === CurrentPageEnum.BUILDING &&
+        params.get("id") === "39" &&
+        params.get("gid") === "16" &&
+        params.get("tt") === "1"
+      ) {
         yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
-
         return;
       } else if (
         state.currentPage === CurrentPageEnum.BUILDING &&
