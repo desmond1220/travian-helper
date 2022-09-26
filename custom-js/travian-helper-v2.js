@@ -806,7 +806,7 @@ const farmWithHero = (state) =>
       ) {
         yield Utils.delayClick();
         const confirmSendTroopsButtonEle = $("#checksum");
-        confirmSendTroopsButtonEle[0].click();
+        yield confirmSendTroopsButtonEle[0].click();
 
         state.nextFarmWithHeroTime = Utils.addToDate(
           new Date(),
