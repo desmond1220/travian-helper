@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/28 00:00:39";
+const BUILD_TIME = "2022/09/28 00:13:51";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -572,7 +572,7 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
             $('a[href="/build.php?id=39&gid=16&tt=2"]')[0].click();
             return;
         }
-        else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2') {
+        else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2') {
             yield Utils.delayClick();
             const sendTroopButton = $("#ok");
             const confirmButton = $("#checksum");
@@ -692,24 +692,29 @@ const render = (state) => {
         </div>
         <br />
         <div class="flex-row">
-            ${Object.entries(villages).map(([id, village]) => `
+            ${Object.entries(villages).map(([id, village]) => {
+        var _c, _d;
+        return `
                 <div class="village-container">
                     <h4>${village.name} (id: ${id}) (${village.position.x}, ${village.position.y})</h4>
                     <br />
                     <div>Last update: ${Utils.formatDate(village.lastUpdatedTime)}</div>
                     <div>Attack alert backoff: ${Utils.formatDate(village.attackAlertBackoff)}</div>
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
+                    <br />
                     <div class="flex-row">
                         <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
                     </div>
                     ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
-        && params.get('gid') === '16' && params.get('tt') === '2' ?
-        `<div class="flex-row">
+            && params.get('gid') === '16' && params.get('tt') === '2' ?
+            `<div class="flex-row">
                             <input id="minCustomFarmMinutes" style="width: 5%">min</input>
                             <input id="maxCustomFarmMinutes" style="width: 5%">max</input>
                             <button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>
                         </div>`
-        : ''}
+            : ''}
+                    ${village.customFarm ? `<div>Target: (${(_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.position.x}|${(_d = village.customFarm) === null || _d === void 0 ? void 0 : _d.position.y})</div>` : ''}
+                    
                     <br />
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${village.resources.clay} Iron: ${village.resources.iron} Crop: ${village.resources.crop}</div>
@@ -741,7 +746,8 @@ const render = (state) => {
                         <div>${troop.type} ${troop.count} ${Utils.formatDate(troop.time)}</div>
                     `).join('')}
                 </div>
-            `).join('')}
+            `;
+    }).join('')}
         </div>
     `);
     state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' &&
