@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 23:03:17";
+const BUILD_TIME = "2022/09/27 23:09:43";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -699,7 +699,7 @@ const render = (state) => {
                         <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
                         ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
         && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' ?
-        `<button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>` : ''}
+        `<input id="minCustomFarmMinutes">min</input><input id="maxCustomFarmMinutes">max</input><button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>` : ''}
                     </div>
                     <br />
                     <h5>Resources</h5>
@@ -741,8 +741,8 @@ const render = (state) => {
                     "y": -999
                 },
                 farmIntervalMinutes: {
-                    "min": 20,
-                    "max": 25
+                    "min": 999,
+                    "max": 999
                 },
                 troops: {}
             };
@@ -756,6 +756,8 @@ const render = (state) => {
             });
             customFarm.position.x = parseInt($("#xCoordInput").val());
             customFarm.position.y = parseInt($("#yCoordInput").val());
+            customFarm.farmIntervalMinutes.min = parseInt($("#minCustomFarmMinutes").val());
+            customFarm.farmIntervalMinutes.max = parseInt($("#maxCustomFarmMinutes").val());
         });
     state.currentPage === CurrentPageEnum.BUILDING && $('#addCurrentToPending').on('click', () => {
         const villages = state.villages;
