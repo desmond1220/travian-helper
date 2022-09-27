@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/28 00:13:51";
+const BUILD_TIME = "2022/09/28 00:19:16";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -595,7 +595,7 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
-            && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '1') {
+            && params.get('gid') === '16' && params.get('tt') === '1') {
             village.nextCustomFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(customFarm.farmIntervalMinutes.min, customFarm.farmIntervalMinutes.max), Utils.randInt(0, 59));
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
