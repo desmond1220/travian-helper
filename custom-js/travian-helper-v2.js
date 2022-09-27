@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/28 00:19:16";
+const BUILD_TIME = "2022/09/28 00:35:25";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -693,7 +693,7 @@ const render = (state) => {
         <br />
         <div class="flex-row">
             ${Object.entries(villages).map(([id, village]) => {
-        var _c, _d;
+        var _c, _d, _e, _f;
         return `
                 <div class="village-container">
                     <h4>${village.name} (id: ${id}) (${village.position.x}, ${village.position.y})</h4>
@@ -713,7 +713,11 @@ const render = (state) => {
                             <button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>
                         </div>`
             : ''}
-                    ${village.customFarm ? `<div>Target: (${(_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.position.x}|${(_d = village.customFarm) === null || _d === void 0 ? void 0 : _d.position.y})</div>` : ''}
+                    ${village.customFarm ?
+            `<div>Target: (${(_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.position.x}|${(_d = village.customFarm) === null || _d === void 0 ? void 0 : _d.position.y})</div>
+                    <div>Troops: ${Object.keys(village.customFarm.troops).map(key => { var _c; return key + ": " + ((_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.troops[key]); }).join(", ")}</div>
+                    <div>Interval Range: ${(_e = village.customFarm) === null || _e === void 0 ? void 0 : _e.farmIntervalMinutes.min}mins - ${(_f = village.customFarm) === null || _f === void 0 ? void 0 : _f.farmIntervalMinutes.max}mins</div>`
+            : ''}
                     
                     <br />
                     <h5>Resources</h5>
@@ -750,10 +754,10 @@ const render = (state) => {
     }).join('')}
         </div>
     `);
-    state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' &&
+    state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2' &&
         $('#addCurrentToCustomFarm').on('click', () => {
             const villages = state.villages;
-            let customFarm = villages[state.currentVillageId].customFarm || {
+            let customFarm = {
                 position: {
                     "x": -999,
                     "y": -999
