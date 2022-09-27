@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 22:33:31";
+const BUILD_TIME = "2022/09/27 22:37:53";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -623,6 +623,7 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         // @ts-ignore
         if (villages[state.currentVillageId].nextCustomFarmTime < new Date()) {
             yield executeCustomFarm(state, state.currentVillageId);
+            return;
         }
     }
     // Check other villages
@@ -773,6 +774,7 @@ const render = (state) => {
     handleFeatureToggle('#toggleAutoScan', state, 'autoScan');
     handleFeatureToggle('#toggleAutoBuild', state, 'autoBuild');
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
+    handleFeatureToggle('#toggleAutoCustomFarm', state, 'autoCustomFarm');
     handleFeatureToggle('#toggleAlertAttack', state, 'alertAttack');
     handleFeatureToggle('#toggleAlertEmptyBuildQueue', state, 'alertEmptyBuildQueue');
     handleFeatureToggle('#toggleAlertResourceCapacityFull', state, 'alertResourceCapacityFull');
