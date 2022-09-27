@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 22:18:33";
+const BUILD_TIME = "2022/09/27 22:28:37";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -413,6 +413,7 @@ const updateCurrentVillageStatus = (state) => {
         villages[currentVillageId].incomingTroops = incomingTroops;
         villages[currentVillageId].outgoingTroops = outgoingTroops;
         villages[currentVillageId].lastUpdatedTime = new Date();
+        villages[currentVillageId].nextCustomFarmTime = new Date();
     }
     state.villages = villages;
 };
@@ -618,8 +619,11 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const villages = state.villages;
     // Check current village custom farm
     if (villages[state.currentVillageId].customFarm &&
-        villages[state.currentVillageId].nextCustomFarmTime || new Date() < new Date()) {
-        yield executeCustomFarm(state, state.currentVillageId);
+        villages[state.currentVillageId].nextCustomFarmTime) {
+        // @ts-ignore
+        if (villages[state.currentVillageId].nextCustomFarmTime < new Date()) {
+            yield executeCustomFarm(state, state.currentVillageId);
+        }
     }
     // Check other villages
     const nextVillageIdToCustomFarm = Object.entries(state.villages)
