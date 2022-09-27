@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 23:24:04";
+const BUILD_TIME = "2022/09/28 00:00:39";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -413,7 +413,7 @@ const updateCurrentVillageStatus = (state) => {
         villages[currentVillageId].incomingTroops = incomingTroops;
         villages[currentVillageId].outgoingTroops = outgoingTroops;
         villages[currentVillageId].lastUpdatedTime = new Date();
-        villages[currentVillageId].nextCustomFarmTime = new Date();
+        villages[currentVillageId].nextCustomFarmTime = villages[currentVillageId].nextCustomFarmTime || new Date();
     }
     state.villages = villages;
 };
@@ -616,7 +616,8 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     if (villages[state.currentVillageId].customFarm &&
         villages[state.currentVillageId].nextCustomFarmTime) {
         // @ts-ignore
-        if (villages[state.currentVillageId].nextCustomFarmTime < new Date()) {
+        if (new Date(villages[state.currentVillageId].nextCustomFarmTime) < new Date()) {
+            state.feature.debug && console.log("Execute custom farm");
             yield executeCustomFarm(state);
             return;
         }
@@ -625,10 +626,12 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const nextVillageIdToCustomFarm = Object.entries(state.villages)
         .filter(([_, village]) => village.id !== state.currentVillageId &&
         village.customFarm &&
-        village.nextCustomFarmTime || new Date() < new Date())
+        village.nextCustomFarmTime &&
+        new Date(village.nextCustomFarmTime) < new Date())
         .map(([id, _]) => id)
         .find(_ => true);
     if (nextVillageIdToCustomFarm) {
+        state.feature.debug && console.log("Go to village");
         yield Navigation.goToVillage(state, nextVillageIdToCustomFarm, CurrentActionEnum.NAVIGATE_TO_FIELDS);
     }
     else {
@@ -700,10 +703,10 @@ const render = (state) => {
                         <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
                     </div>
                     ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
-        && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' ?
+        && params.get('gid') === '16' && params.get('tt') === '2' ?
         `<div class="flex-row">
-                            <input id="minCustomFarmMinutes">min</input>
-                            <input id="maxCustomFarmMinutes">max</input>
+                            <input id="minCustomFarmMinutes" style="width: 5%">min</input>
+                            <input id="maxCustomFarmMinutes" style="width: 5%">max</input>
                             <button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>
                         </div>`
         : ''}
