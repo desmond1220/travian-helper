@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 23:13:05";
+const BUILD_TIME = "2022/09/27 23:24:04";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -698,19 +698,25 @@ const render = (state) => {
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
                     <div class="flex-row">
                         <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
-                        ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
-        && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' ?
-        `<input id="minCustomFarmMinutes">min</input><input id="maxCustomFarmMinutes">max</input><button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>` : ''}
                     </div>
+                    ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
+        && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' ?
+        `<div class="flex-row">
+                            <input id="minCustomFarmMinutes">min</input>
+                            <input id="maxCustomFarmMinutes">max</input>
+                            <button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>
+                        </div>`
+        : ''}
                     <br />
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${village.resources.clay} Iron: ${village.resources.iron} Crop: ${village.resources.crop}</div>
+                    <br />
                     <h5>Current build tasks</h5>
                     ${village.currentBuildTasks.map(task => `
                         <div>${task.name} ${task.level} ${Utils.formatDate(task.finishTime)}</div>
                     `).join('')}
-                    <div class="flex-row">
                     <br />
+                    <div class="flex-row">
                         <h5>Pending build tasks</h5> 
                         ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id ? `<button id="addCurrentToPending" class="ml-5">Add Current</button>` : ''}
                     </div>
@@ -721,10 +727,12 @@ const render = (state) => {
                             <button class="removeFromPending" village-id="${id}" idx="${i}">x</button>
                         </div>
                     `).join('')}
+                    <br />
                     <h5>Incoming Troop Movements</h5>
                     ${village.incomingTroops.map(troop => `
                         <div>${troop.type} ${troop.count} ${Utils.formatDate(troop.time)}</div>
                     `).join('')}
+                    <br />
                     <h5>Outgoing Troop Movements</h5>
                     ${village.outgoingTroops.map(troop => `
                         <div>${troop.type} ${troop.count} ${Utils.formatDate(troop.time)}</div>
@@ -759,6 +767,8 @@ const render = (state) => {
             customFarm.position.y = parseInt($("#yCoordInput").val());
             customFarm.farmIntervalMinutes.min = parseInt($("#minCustomFarmMinutes").val());
             customFarm.farmIntervalMinutes.max = parseInt($("#maxCustomFarmMinutes").val());
+            villages[state.currentVillageId].customFarm = customFarm;
+            state.villages = villages;
         });
     state.currentPage === CurrentPageEnum.BUILDING && $('#addCurrentToPending').on('click', () => {
         const villages = state.villages;
