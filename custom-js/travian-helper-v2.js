@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/28 00:41:37";
+const BUILD_TIME = "2022/09/28 00:52:53";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -564,7 +564,8 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const params = new URLSearchParams(window.location.search);
-    const village = state.villages[state.currentVillageId];
+    const villages = state.villages;
+    const village = villages[state.currentVillageId];
     const customFarm = village === null || village === void 0 ? void 0 : village.customFarm;
     if (customFarm) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
@@ -597,7 +598,7 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
             && params.get('gid') === '16' && params.get('tt') === '1') {
             village.nextCustomFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(customFarm.farmIntervalMinutes.min, customFarm.farmIntervalMinutes.max), Utils.randInt(0, 59));
-            state.villages[state.currentVillageId] = village;
+            state.villages = villages;
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
