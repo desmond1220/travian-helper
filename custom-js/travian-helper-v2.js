@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 23:09:43";
+const BUILD_TIME = "2022/09/27 23:13:05";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -623,8 +623,9 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     }
     // Check other villages
     const nextVillageIdToCustomFarm = Object.entries(state.villages)
-        .filter(([_, village]) => village.customFarm
-        && village.nextCustomFarmTime || new Date() < new Date())
+        .filter(([_, village]) => village.id !== state.currentVillageId &&
+        village.customFarm &&
+        village.nextCustomFarmTime || new Date() < new Date())
         .map(([id, _]) => id)
         .find(_ => true);
     if (nextVillageIdToCustomFarm) {
