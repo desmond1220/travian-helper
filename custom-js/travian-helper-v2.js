@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 22:37:53";
+const BUILD_TIME = "2022/09/27 23:03:17";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -562,9 +562,9 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
-const executeCustomFarm = (state, targetVillageId) => __awaiter(void 0, void 0, void 0, function* () {
+const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const params = new URLSearchParams(window.location.search);
-    const village = state.villages[targetVillageId];
+    const village = state.villages[state.currentVillageId];
     const customFarm = village === null || village === void 0 ? void 0 : village.customFarm;
     if (customFarm) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
@@ -601,12 +601,7 @@ const executeCustomFarm = (state, targetVillageId) => __awaiter(void 0, void 0, 
             return;
         }
         else if (state.currentPage === CurrentPageEnum.TOWN) {
-            if (state.currentVillageId !== targetVillageId) {
-                yield Navigation.goToVillage(state, targetVillageId, CurrentActionEnum.CUSTOM_FARM);
-            }
-            else {
-                yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.CUSTOM_FARM);
-            }
+            yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.CUSTOM_FARM);
             return;
         }
         else {
@@ -622,7 +617,7 @@ const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         villages[state.currentVillageId].nextCustomFarmTime) {
         // @ts-ignore
         if (villages[state.currentVillageId].nextCustomFarmTime < new Date()) {
-            yield executeCustomFarm(state, state.currentVillageId);
+            yield executeCustomFarm(state);
             return;
         }
     }
@@ -670,6 +665,7 @@ const handleFeatureToggle = (selector, state, key) => {
 };
 const render = (state) => {
     const villages = state.villages;
+    const params = new URLSearchParams(window.location.search);
     $('#console').html(`
         <div class="flex-row">
             <h4>Console</h4>
@@ -699,7 +695,12 @@ const render = (state) => {
                     <div>Last update: ${Utils.formatDate(village.lastUpdatedTime)}</div>
                     <div>Attack alert backoff: ${Utils.formatDate(village.attackAlertBackoff)}</div>
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
-                    <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
+                    <div class="flex-row">
+                        <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
+                        ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id
+        && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' ?
+        `<button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>` : ''}
+                    </div>
                     <br />
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${village.resources.clay} Iron: ${village.resources.iron} Crop: ${village.resources.crop}</div>
@@ -731,6 +732,31 @@ const render = (state) => {
             `).join('')}
         </div>
     `);
+    state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '2' &&
+        $('#addCurrentToCustomFarm').on('click', () => {
+            const villages = state.villages;
+            let customFarm = villages[state.currentVillageId].customFarm || {
+                position: {
+                    "x": -999,
+                    "y": -999
+                },
+                farmIntervalMinutes: {
+                    "min": 20,
+                    "max": 25
+                },
+                troops: {}
+            };
+            $("#troops > tbody").find("td").each((column, td) => {
+                const troopInput = $(td).find("input");
+                const troopKey = troopInput.attr('name');
+                const troopCount = troopInput.val();
+                if (troopKey && troopInput) {
+                    customFarm.troops[troopKey] = troopCount;
+                }
+            });
+            customFarm.position.x = parseInt($("#xCoordInput").val());
+            customFarm.position.y = parseInt($("#yCoordInput").val());
+        });
     state.currentPage === CurrentPageEnum.BUILDING && $('#addCurrentToPending').on('click', () => {
         const villages = state.villages;
         const pendingBuildTasks = villages[state.currentVillageId].pendingBuildTasks;
