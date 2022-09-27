@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 22:13:15";
+const BUILD_TIME = "2022/09/27 22:18:33";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -112,6 +112,7 @@ StateHandler.INITIAL_STATE = {
         alertEmptyBuildQueue: false,
         alertResourceCapacityFull: false,
         autoFarm: false,
+        autoCustomFarm: false,
         debug: false
     },
     nextVillageRotationTime: new Date(),
@@ -671,6 +672,7 @@ const render = (state) => {
             <input id="toggleAutoScan" class="ml-5" type="checkbox" ${state.feature.autoScan ? 'checked' : ''}/> Auto scan
             <input id="toggleAutoBuild" class="ml-5" type="checkbox" ${state.feature.autoBuild ? 'checked' : ''}/> Auto build
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
+            <input id="toggleAutoCustomFarm" class="ml-5" type="checkbox" ${state.feature.autoCustomFarm ? 'checked' : ''}/> Auto custom farm
             <input id="toggleAlertAttack" class="ml-5" type="checkbox" ${state.feature.alertAttack ? 'checked' : ''}/> Alert attack
             <input id="toggleAlertEmptyBuildQueue" class="ml-5" type="checkbox" ${state.feature.alertEmptyBuildQueue ? 'checked' : ''}/> Alert empty build queue
             <input id="toggleAlertResourceCapacityFull" class="ml-5" type="checkbox" ${state.feature.alertResourceCapacityFull ? 'checked' : ''}/> Alert resource capacity full
@@ -683,13 +685,17 @@ const render = (state) => {
             <div>Next rotation: ${Utils.formatDate(state.nextVillageRotationTime)}</div>
             <div>Next farm: ${Utils.formatDate(state.nextFarmTime)}</div>
         </div>
+        <br />
         <div class="flex-row">
             ${Object.entries(villages).map(([id, village]) => `
                 <div class="village-container">
                     <h4>${village.name} (id: ${id}) (${village.position.x}, ${village.position.y})</h4>
+                    <br />
                     <div>Last update: ${Utils.formatDate(village.lastUpdatedTime)}</div>
                     <div>Attack alert backoff: ${Utils.formatDate(village.attackAlertBackoff)}</div>
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
+                    <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
+                    <br />
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${village.resources.clay} Iron: ${village.resources.iron} Crop: ${village.resources.crop}</div>
                     <h5>Current build tasks</h5>
@@ -697,6 +703,7 @@ const render = (state) => {
                         <div>${task.name} ${task.level} ${Utils.formatDate(task.finishTime)}</div>
                     `).join('')}
                     <div class="flex-row">
+                    <br />
                         <h5>Pending build tasks</h5> 
                         ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id ? `<button id="addCurrentToPending" class="ml-5">Add Current</button>` : ''}
                     </div>
