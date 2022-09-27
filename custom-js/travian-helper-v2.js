@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/27 22:28:37";
+const BUILD_TIME = "2022/09/27 22:33:31";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -814,7 +814,7 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 state.feature.debug && console.log("Attempting farm");
                 yield farm(state);
             }
-            if ([CurrentActionEnum.IDLE, CurrentActionEnum.CUSTOM_FARM].includes(state.currentAction)) {
+            if ([CurrentActionEnum.IDLE, CurrentActionEnum.CUSTOM_FARM].includes(state.currentAction) && state.feature.autoCustomFarm) {
                 state.feature.debug && console.log("Attempting custom farm");
                 yield customFarm(state);
             }
