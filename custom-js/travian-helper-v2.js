@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/29 21:59:14";
+const BUILD_TIME = "2022/09/29 22:23:12";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -55,7 +55,8 @@ const GID_NAME_MAP = {
     "20": "Stable",
     "22": "Academy",
     "30": "Great Stable",
-    "40": "Wonder of the World"
+    "40": "Wonder of the World",
+    "46": "Hospital"
 };
 var CurrentPageEnum;
 (function (CurrentPageEnum) {
@@ -236,9 +237,16 @@ const createStyle = () => {
             margin-right: 5px;
         }
         
-        #console button {
+        .tjs-btn, #console button {
             border: 1px solid black;
             border-radius: 3px;
+        }
+        
+        .build-indicator {
+            background-color: white;
+            text-align: center;
+            width: 60%;
+            height: 60%;
         }
     `;
     document.head.append(style);
@@ -684,7 +692,14 @@ const render = (state) => {
         if ($('#addCurrentToPendingInBuilding').length === 0)
             $('.upgradeBuilding').after('<button id="addCurrentToPendingInBuilding" class="addCurrentToPending">Add to queue</button>');
         else
-            $('#addCurrentToPendingInBuilding').replaceWith('<button id="addCurrentToPendingInBuilding" class="addCurrentToPending">Add to queue</button>');
+            $('#addCurrentToPendingInBuilding').replaceWith('<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>');
+    }
+    else if (state.currentPage === CurrentPageEnum.TOWN) {
+        if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
+            state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
+                $(`a[href="/build.php?id=${task.aid}"]`).find('div').after(`<div class="build-indicator">${idx + 1}</div>`);
+            });
+        }
     }
     const villages = state.villages;
     const params = new URLSearchParams(window.location.search);
@@ -692,7 +707,7 @@ const render = (state) => {
         <div class="flex-row">
             <h4>Console</h4>
             <input id="toggleAutoLogin" class="ml-5" type="checkbox" ${state.feature.autoLogin ? 'checked' : ''}/> Auto login
-            <input id="toggleAutoScan" class="ml-5" type="checkbox" ${state.feature.autoScan ? 'checked' : ''}/> Auto scan
+            <input id="toggleAutoScan" class="ml-5" type="checkbox" ${state.feature.autoScan ? 'checked' : ''}/> Auto village rotation
             <input id="toggleAutoBuild" class="ml-5" type="checkbox" ${state.feature.autoBuild ? 'checked' : ''}/> Auto build
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
             <input id="toggleAutoCustomFarm" class="ml-5" type="checkbox" ${state.feature.autoCustomFarm ? 'checked' : ''}/> Auto custom farm
