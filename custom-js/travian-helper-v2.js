@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/29 22:41:11";
+const BUILD_TIME = "2022/09/29 22:52:10";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -705,6 +705,8 @@ const render = (state) => {
     else if (state.currentPage === CurrentPageEnum.TOWN) {
         if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
             state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
+                console.log(task);
+                console.log(idx);
                 if ($(`#buildingListIndicator-${task.aid}-${idx}`).length === 0)
                     $(`a[href="/build.php?id=${task.aid}&gid=${task.gid}"]`).find('div').after(`<div id="buildingListIndicator-${task.aid}-${idx}" class="build-indicator">${idx + 1}</div>`);
                 else
