@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/29 22:32:23";
+const BUILD_TIME = "2022/09/29 22:37:40";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -697,14 +697,20 @@ const render = (state) => {
     else if (state.currentPage === CurrentPageEnum.FIELDS) {
         if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
             state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
-                $(`a[href="/build.php?id=${task.aid}"]`).find('div').after(`<div class="build-indicator">${idx + 1}</div>`);
+                if ($(`#buildingListIndicator-${task.aid}`).length === 0)
+                    $(`a[href="/build.php?id=${task.aid}"]`).find('div').after(`<div id="buildingListIndicator-${task.aid}" class="build-indicator">${idx + 1}</div>`);
+                else
+                    $(`#buildingListIndicator-${task.aid}`).replaceWith(`<div id="buildingListIndicator-${task.aid}" class="build-indicator">${idx + 1}</div>`);
             });
         }
     }
     else if (state.currentPage === CurrentPageEnum.TOWN) {
         if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
             state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
-                $(`a[href="/build.php?id=${task.aid}&gid=${task.gid}"]`).find('div').after(`<div class="build-indicator">${idx + 1}</div>`);
+                if ($(`#buildingListIndicator-${task.aid}`).length === 0)
+                    $(`a[href="/build.php?id=${task.aid}&gid=${task.gid}"]`).find('div').after(`<div id="buildingListIndicator-${task.aid}" class="build-indicator">${idx + 1}</div>`);
+                else
+                    $(`#buildingListIndicator-${task.aid}`).replaceWith(`<div id="buildingListIndicator-${task.aid}" class="build-indicator">${idx + 1}</div>`);
             });
         }
     }
