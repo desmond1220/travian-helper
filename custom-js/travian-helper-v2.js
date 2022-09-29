@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/29 22:52:10";
+const BUILD_TIME = "2022/09/29 23:05:05";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "1": "Woodcutter",
@@ -154,6 +154,11 @@ Utils.formatDate = (dateInput) => {
 Utils.isSufficientResources = (required, own) => {
     return required.lumber <= own.lumber && required.clay <= own.clay && required.iron <= own.iron && required.crop <= own.crop;
 };
+Utils.groupBy = (arr, key) => arr.reduce((groups, item) => {
+    var _c;
+    (groups[_c = key(item)] || (groups[_c] = [])).push(item);
+    return groups;
+}, {});
 class Navigation {
 }
 _b = Navigation;
@@ -703,14 +708,16 @@ const render = (state) => {
         }
     }
     else if (state.currentPage === CurrentPageEnum.TOWN) {
-        if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
-            state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
-                console.log(task);
-                console.log(idx);
-                if ($(`#buildingListIndicator-${task.aid}-${idx}`).length === 0)
-                    $(`a[href="/build.php?id=${task.aid}&gid=${task.gid}"]`).find('div').after(`<div id="buildingListIndicator-${task.aid}-${idx}" class="build-indicator">${idx + 1}</div>`);
+        const pendingBuildTasks = state.villages[state.currentVillageId].pendingBuildTasks.map((task, idx) => (Object.assign(Object.assign({}, task), { order: idx })));
+        if (pendingBuildTasks.length > 0) {
+            const buildingTasksMap = Utils.groupBy(pendingBuildTasks, i => i.aid);
+            Object.entries(buildingTasksMap).forEach(([aid, tasks]) => {
+                const orders = tasks.map(t => t.order + 1).join(", ");
+                const task = tasks[0];
+                if ($(`#buildingListIndicator-${aid}`).length === 0)
+                    $(`a[href="/build.php?id=${aid}&gid=${task.gid}"]`).find('div').after(`<div id="buildingListIndicator-${aid}" class="build-indicator">${orders}</div>`);
                 else
-                    $(`#buildingListIndicator-${task.aid}-${idx}`).replaceWith(`<div id="buildingListIndicator-${task.aid}-${idx}" class="build-indicator">${idx + 1}</div>`);
+                    $(`#buildingListIndicator-${aid}`).replaceWith(`<div id="buildingListIndicator-${aid}" class="build-indicator">${orders}</div>`);
             });
         }
     }
