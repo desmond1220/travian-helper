@@ -759,7 +759,6 @@ const handleFeatureToggle = (selector, state, key) => {
     });
 };
 const render = (state) => {
-    updateCurrentPage(state);
     if (state.currentPage === CurrentPageEnum.BUILDING) {
         const btn = '<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>';
         if ($('#addCurrentToPendingInBuilding').length === 0)
@@ -1008,6 +1007,7 @@ const render = (state) => {
     handleFeatureToggle('#toggleDebug', state, 'debug');
 };
 const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    updateCurrentPage(state);
     while (true) {
         if ([CurrentPageEnum.LOGIN].includes(state.currentPage) && state.feature.autoLogin) {
             state.feature.debug && console.log("Attempt login");
