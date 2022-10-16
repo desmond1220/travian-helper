@@ -319,7 +319,6 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
             if (unreadReports.length > 0) {
-                
                 const feature = state.feature;
                 feature.autoFarm = false;
                 state.feature = feature;
