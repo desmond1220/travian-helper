@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/10/16 09:16:21";
+const BUILD_TIME = "2022/10/16 09:20:23";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -799,7 +799,7 @@ const render = (state) => {
             $(".additionalInformation").after(troops50);
         else
             $('#troops-required-50').replaceWith(troops50);
-        const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil((sum - cranny * 4)) / 70}) | ${Math.ceil((sum - (cranny * 0.85) * 4) / 70)} with hero (70 per troop)</div>`;
+        const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil((sum - cranny * 4) / 70)} | ${Math.ceil((sum - (cranny * 0.85) * 4) / 70)} with hero (70 per troop)</div>`;
         if ($('#troops-required-70').length === 0)
             $(".additionalInformation").after(troops70);
         else
