@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/10/16 09:05:37";
+const BUILD_TIME = "2022/10/16 09:11:39";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -275,7 +275,8 @@ const updateCurrentPage = (state) => {
             state.currentPage = CurrentPageEnum.BUILDING;
             break;
         }
-        case '/report': {
+        case '/report/overview':
+        case '/report/scouting': {
             state.currentPage = CurrentPageEnum.REPORT;
             break;
         }
