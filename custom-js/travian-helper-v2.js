@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/09/29 23:05:05";
+const BUILD_TIME = "2022/10/16 09:05:37";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
+    "-1": "Unknown",
     "1": "Woodcutter",
     "2": "Clay Pit",
     "3": "Iron Mine",
@@ -64,6 +65,7 @@ var CurrentPageEnum;
     CurrentPageEnum["FIELDS"] = "FIELDS";
     CurrentPageEnum["TOWN"] = "TOWN";
     CurrentPageEnum["BUILDING"] = "BUILDING";
+    CurrentPageEnum["REPORT"] = "REPORT";
     CurrentPageEnum["UNKNOWN"] = "UNKNOWN";
 })(CurrentPageEnum || (CurrentPageEnum = {}));
 var CurrentActionEnum;
@@ -71,6 +73,7 @@ var CurrentActionEnum;
     CurrentActionEnum["IDLE"] = "IDLE";
     CurrentActionEnum["BUILD"] = "BUILD";
     CurrentActionEnum["NAVIGATE_TO_FIELDS"] = "NAVIGATE_TO_FIELDS";
+    CurrentActionEnum["SCOUT"] = "SCOUT";
     CurrentActionEnum["FARM"] = "FARM";
     CurrentActionEnum["CUSTOM_FARM"] = "CUSTOM_FARM";
 })(CurrentActionEnum || (CurrentActionEnum = {}));
@@ -112,12 +115,15 @@ StateHandler.INITIAL_STATE = {
         alertAttack: false,
         alertEmptyBuildQueue: false,
         alertResourceCapacityFull: false,
+        autoScout: false,
         autoFarm: false,
         autoCustomFarm: false,
         debug: false
     },
     nextVillageRotationTime: new Date(),
+    nextScoutTime: new Date(),
     nextFarmTime: new Date(),
+    alertedPlusIncomingAttack: false,
     telegramChatId: '',
     telegramToken: '',
     username: '',
@@ -154,11 +160,6 @@ Utils.formatDate = (dateInput) => {
 Utils.isSufficientResources = (required, own) => {
     return required.lumber <= own.lumber && required.clay <= own.clay && required.iron <= own.iron && required.crop <= own.crop;
 };
-Utils.groupBy = (arr, key) => arr.reduce((groups, item) => {
-    var _c;
-    (groups[_c = key(item)] || (groups[_c] = [])).push(item);
-    return groups;
-}, {});
 class Navigation {
 }
 _b = Navigation;
@@ -232,6 +233,7 @@ const createStyle = () => {
         
         #console .village-container {
             flex: 0 1 33%;
+            margin-top: 10px
         }
         
         #console .ml-5 {
@@ -246,10 +248,9 @@ const createStyle = () => {
             border: 1px solid black;
             border-radius: 3px;
         }
-        
-        .build-indicator {
-            background-color: white;
-            text-align: center;
+
+        .tjs-pending {
+            background: lightblue;
         }
     `;
     document.head.append(style);
@@ -272,6 +273,10 @@ const updateCurrentPage = (state) => {
         }
         case '/build.php': {
             state.currentPage = CurrentPageEnum.BUILDING;
+            break;
+        }
+        case '/report': {
+            state.currentPage = CurrentPageEnum.REPORT;
             break;
         }
         case '/': {
@@ -424,28 +429,44 @@ const updateCurrentVillageStatus = (state) => {
         villages[currentVillageId].incomingTroops = incomingTroops;
         villages[currentVillageId].outgoingTroops = outgoingTroops;
         villages[currentVillageId].lastUpdatedTime = new Date();
-        villages[currentVillageId].nextCustomFarmTime = villages[currentVillageId].nextCustomFarmTime || new Date();
     }
     state.villages = villages;
 };
-const alertAttack = (state) => {
+const alertAttack = (state, village, attackTime) => {
     const villages = state.villages;
-    const village = villages[state.currentVillageId];
-    const attack = village.incomingTroops.find(e => e.type === TroopMovementType.ATTACK);
-    if (attack) {
-        if (!state.telegramChatId || !state.telegramToken) {
-            state.feature.debug && console.log("Telegram chat id or token not set");
-            return;
-        }
+    if (!state.telegramChatId || !state.telegramToken) {
+        state.feature.debug && console.log("Telegram chat id or token not set");
+        return;
+    }
+    if (village) {
         if (!village.attackAlertBackoff || new Date(village.attackAlertBackoff) < new Date()) {
             state.feature.debug && console.log(`Send alert for attack at village ${village.name}`);
             village.attackAlertBackoff = Utils.addToDate(new Date(), 0, 5, 0);
             state.villages = villages;
-            fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Village ${village.name} under attack at ${Utils.formatDate(attack.time)}`);
+            fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Village ${village.name} under attack ${attackTime && `at ${Utils.formatDate(attackTime)}`}`);
         }
         else {
             state.feature.debug && console.log(`Not alerting attack due to backoff at ${Utils.formatDate(village.attackAlertBackoff)}`);
         }
+    }
+    else {
+        fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Village is under attack`);
+        state.alertedPlusIncomingAttack = true;
+    }
+};
+const checkIncomingAttack = (state) => {
+    const villages = state.villages;
+    const village = villages[state.currentVillageId];
+    const attack = village.incomingTroops.find(e => e.type === TroopMovementType.ATTACK);
+    if (attack) {
+        alertAttack(state, village, attack.time);
+    }
+    const plusNoAttack = $('.sidebar #sidebarBoxVillagelist .content .villageList .listEntry:not(.attack) .iconAndNameWrapper svg.attack').filter((_, attack) => $(attack).css('visibility') === 'hidden');
+    if (plusNoAttack.length !== Object.keys(villages).length && !state.alertedPlusIncomingAttack) {
+        alertAttack(state);
+    }
+    else if (plusNoAttack.length === Object.keys(villages).length && state.alertedPlusIncomingAttack) {
+        state.alertedPlusIncomingAttack = false;
     }
 };
 const alertEmptyBuildQueue = (state) => {
@@ -518,7 +539,11 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         const params = new URLSearchParams(window.location.search);
-        if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === `${task.aid}` && params.get('gid') === `${task.gid}`) {
+        const aid = params.get('id');
+        const gid = params.get('gid');
+        if (state.currentPage === CurrentPageEnum.BUILDING
+            && aid === `${task.aid}`
+            && (gid === `${task.gid}` || task.gid === -1)) {
             // Prevent infinite loop due to mismatch in resources requirements
             const resourceRequirementEle = $('#contract .value');
             if (!resourceRequirementEle.length) {
@@ -529,6 +554,7 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
             const iron = Utils.parseIntIgnoreNonNumeric(resourceRequirementEle[2].innerText);
             const crop = Utils.parseIntIgnoreNonNumeric(resourceRequirementEle[3].innerText);
             village.pendingBuildTasks[0].resources = { lumber, clay, iron, crop };
+            state.villages = villages;
             const bulidButton = $('.section1 > button.green');
             if (bulidButton.length) {
                 yield Utils.delayClick();
@@ -555,11 +581,43 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
         state.currentAction = CurrentActionEnum.IDLE;
     }
 });
+const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    if (new Date(state.nextScoutTime) < new Date()) {
+        const params = new URLSearchParams(window.location.search);
+        if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
+            const startButtonEle = $('.startButton[value=Start]').filter((_, button) => {
+                return $(button).parent().parent().find('.listName').find('span').text() === "Scout";
+            });
+            for (let i = 0; i < startButtonEle.length; i++) {
+                yield Utils.delayClick();
+                startButtonEle[i].click();
+            }
+            state.nextScoutTime = Utils.addToDate(new Date(), 0, Utils.randInt(30, 40), 0);
+            yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
+            return;
+        }
+        else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '99') {
+            yield Utils.delayClick();
+            $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
+            return;
+        }
+        else if (state.currentPage === CurrentPageEnum.TOWN) {
+            yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.SCOUT);
+            return;
+        }
+        else {
+            yield Navigation.goToTown(state, CurrentActionEnum.SCOUT);
+            return;
+        }
+    }
+});
 const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     if (new Date(state.nextFarmTime) < new Date()) {
         const params = new URLSearchParams(window.location.search);
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
-            const startButtonEle = $('.startButton[value=Start]');
+            const startButtonEle = $('.startButton[value=Start]').filter((_, button) => {
+                return $(button).parent().parent().find('.listName').find('span').text() !== "Scout";
+            });
             for (let i = 0; i < startButtonEle.length; i++) {
                 yield Utils.delayClick();
                 startButtonEle[i].click();
@@ -583,11 +641,12 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
-const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
+const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     const params = new URLSearchParams(window.location.search);
     const villages = state.villages;
     const village = villages[state.currentVillageId];
-    const customFarm = village === null || village === void 0 ? void 0 : village.customFarm;
+    const customFarm = (_c = village.customFarms) === null || _c === void 0 ? void 0 : _c[idx];
     if (customFarm) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
             yield Utils.delayClick();
@@ -600,9 +659,12 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
             const confirmButton = $("#checksum");
             if (sendTroopButton.length > 0) {
                 Object.keys(customFarm.troops).forEach(troopKey => {
-                    const troopInputEle = $(`input[name="${troopKey}"]`);
-                    troopInputEle[0].click();
-                    troopInputEle.val(customFarm.troops[troopKey]);
+                    if (customFarm.troops[troopKey]) {
+                        state.feature.debug && (console.log("Troop Key: ", troopKey));
+                        const troopInputEle = $(`input[name="${troopKey}"]`);
+                        troopInputEle[0].click();
+                        troopInputEle.val(customFarm.troops[troopKey]);
+                    }
                 });
                 $("#xCoordInput").val(customFarm.position.x);
                 $("#yCoordInput").val(customFarm.position.y);
@@ -618,7 +680,7 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
             && params.get('gid') === '16' && params.get('tt') === '1') {
-            village.nextCustomFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(customFarm.farmIntervalMinutes.min, customFarm.farmIntervalMinutes.max), Utils.randInt(0, 59));
+            village.customFarms[idx].nextCustomFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(customFarm.farmIntervalMinutes.min, customFarm.farmIntervalMinutes.max), Utils.randInt(0, 59));
             state.villages = villages;
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
@@ -635,23 +697,26 @@ const executeCustomFarm = (state) => __awaiter(void 0, void 0, void 0, function*
 });
 const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const villages = state.villages;
+    const customFarms = villages[state.currentVillageId].customFarms || [];
     // Check current village custom farm
-    if (villages[state.currentVillageId].customFarm &&
-        villages[state.currentVillageId].nextCustomFarmTime) {
-        // @ts-ignore
-        if (new Date(villages[state.currentVillageId].nextCustomFarmTime) < new Date()) {
-            state.feature.debug && console.log("Execute custom farm");
-            yield executeCustomFarm(state);
-            return;
+    for (const idxStr in customFarms) {
+        const idx = parseInt(idxStr);
+        const customFarm = customFarms[idx];
+        if (customFarm.nextCustomFarmTime) {
+            // @ts-ignore
+            if (new Date(customFarm.nextCustomFarmTime) < new Date()) {
+                state.feature.debug && console.log("Execute custom farm");
+                yield executeCustomFarm(state, idx);
+                return;
+            }
         }
     }
     // Check other villages
     const nextVillageIdToCustomFarm = Object.entries(state.villages)
         .filter(([_, village]) => village.id !== state.currentVillageId &&
-        village.customFarm &&
-        village.nextCustomFarmTime &&
-        new Date(village.nextCustomFarmTime) < new Date())
-        .map(([id, _]) => id)
+        village.customFarms &&
+        village.customFarms.length > 0 &&
+        village.customFarms.some(customFarm => customFarm.nextCustomFarmTime && new Date(customFarm.nextCustomFarmTime) < new Date())).map(([id, _]) => id)
         .find(_ => true);
     if (nextVillageIdToCustomFarm) {
         state.feature.debug && console.log("Go to village");
@@ -692,43 +757,60 @@ const handleFeatureToggle = (selector, state, key) => {
 };
 const render = (state) => {
     if (state.currentPage === CurrentPageEnum.BUILDING) {
+        const btn = '<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>';
         if ($('#addCurrentToPendingInBuilding').length === 0)
-            $('.upgradeBuilding').after('<button id="addCurrentToPendingInBuilding" class="addCurrentToPending">Add to queue</button>');
+            $('.upgradeBuilding').after(btn);
         else
-            $('#addCurrentToPendingInBuilding').replaceWith('<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>');
-    }
-    else if (state.currentPage === CurrentPageEnum.FIELDS) {
-        if (state.villages[state.currentVillageId].pendingBuildTasks.length > 0) {
-            state.villages[state.currentVillageId].pendingBuildTasks.forEach((task, idx) => {
-                if ($(`#buildingListIndicator-${task.aid}-${idx}`).length === 0)
-                    $(`a[href="/build.php?id=${task.aid}"]`).find('div').after(`<div id="buildingListIndicator-${task.aid}-${idx}" class="build-indicator">${idx + 1}</div>`);
-                else
-                    $(`#buildingListIndicator-${task.aid}-${idx}`).replaceWith(`<div id="buildingListIndicator-${task.aid}-${idx}" class="build-indicator">${idx + 1}</div>`);
-            });
-        }
-    }
-    else if (state.currentPage === CurrentPageEnum.TOWN) {
-        const pendingBuildTasks = state.villages[state.currentVillageId].pendingBuildTasks.map((task, idx) => (Object.assign(Object.assign({}, task), { order: idx })));
-        if (pendingBuildTasks.length > 0) {
-            const buildingTasksMap = Utils.groupBy(pendingBuildTasks, i => i.aid);
-            Object.entries(buildingTasksMap).forEach(([aid, tasks]) => {
-                const orders = tasks.map(t => t.order + 1).join(", ");
-                const task = tasks[0];
-                if ($(`#buildingListIndicator-${aid}`).length === 0)
-                    $(`a[href="/build.php?id=${aid}&gid=${task.gid}"]`).find('div').after(`<div id="buildingListIndicator-${aid}" class="build-indicator">${orders}</div>`);
-                else
-                    $(`#buildingListIndicator-${aid}`).replaceWith(`<div id="buildingListIndicator-${aid}" class="build-indicator">${orders}</div>`);
-            });
-        }
+            $('#addCurrentToPendingInBuilding').replaceWith(btn);
     }
     const villages = state.villages;
+    const currentVillage = villages[state.currentVillageId];
     const params = new URLSearchParams(window.location.search);
+    if (currentVillage && [CurrentPageEnum.FIELDS, CurrentPageEnum.TOWN].includes(state.currentPage)) {
+        const records = currentVillage.pendingBuildTasks.reduce((group, task) => {
+            group[task.aid] = group[task.aid] || 0;
+            group[task.aid]++;
+            return group;
+        }, {});
+        const classNamePrefix = state.currentPage === CurrentPageEnum.FIELDS ? "buildingSlot" : "aid";
+        $('.tjs-pending').remove();
+        Object.entries(records).forEach(([id, count]) => {
+            const div = `<div class="tjs-pending">+${count}</div>`;
+            if ($(`.${classNamePrefix}${id} .tjs-pending`).length === 0) {
+                $(`.${classNamePrefix}${id} .labelLayer`).after(div);
+            }
+            else {
+                $(`.${classNamePrefix}${id} .tjs-pending`).replaceWith(div);
+            }
+        });
+    }
+    if (state.currentPage === CurrentPageEnum.REPORT) {
+        const resourcesFromReport = {};
+        const resources = $('.resources').find('span.value');
+        resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
+        resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
+        resourcesFromReport.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text());
+        resourcesFromReport.crop = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[3]).text());
+        const sum = resourcesFromReport.lumber + resourcesFromReport.clay + resourcesFromReport.iron + resourcesFromReport.crop;
+        const cranny = Utils.parseIntIgnoreNonNumeric($('.rArea').text());
+        const troops50 = `<div id="troops-required-50">Troops Required: ${Math.ceil(sum - cranny * 4) / 50} | ${Math.ceil(sum - (cranny * 0.85) * 4) / 50} with hero (50 per troop)</div>`;
+        if ($('#troops-required-50').length === 0)
+            $(".additionalInformation").after(troops50);
+        else
+            $('#troops-required-50').replaceWith(troops50);
+        const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil(sum - cranny * 4) / 70} | ${Math.ceil(sum - (cranny * 0.85) * 4) / 70} with hero (70 per troop)</div>`;
+        if ($('#troops-required-70').length === 0)
+            $(".additionalInformation").after(troops70);
+        else
+            $('#troops-required-70').replaceWith(troops70);
+    }
     $('#console').html(`
         <div class="flex-row">
             <h4>Console</h4>
             <input id="toggleAutoLogin" class="ml-5" type="checkbox" ${state.feature.autoLogin ? 'checked' : ''}/> Auto login
             <input id="toggleAutoScan" class="ml-5" type="checkbox" ${state.feature.autoScan ? 'checked' : ''}/> Auto village rotation
             <input id="toggleAutoBuild" class="ml-5" type="checkbox" ${state.feature.autoBuild ? 'checked' : ''}/> Auto build
+            <input id="toggleAutoScout" class="ml-5" type="checkbox" ${state.feature.autoScout ? 'checked' : ''}/> Auto scout
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
             <input id="toggleAutoCustomFarm" class="ml-5" type="checkbox" ${state.feature.autoCustomFarm ? 'checked' : ''}/> Auto custom farm
             <input id="toggleAlertAttack" class="ml-5" type="checkbox" ${state.feature.alertAttack ? 'checked' : ''}/> Alert attack
@@ -741,13 +823,16 @@ const render = (state) => {
             <div>Current Page: ${state.currentPage} (Last render: ${Utils.formatDate(new Date())})</div>
             <div>Current Action: ${state.currentAction}</div>
             <div>Next rotation: ${Utils.formatDate(state.nextVillageRotationTime)}</div>
+            <div>Next scout: ${Utils.formatDate(state.nextScoutTime)}</div>
             <div>Next farm: ${Utils.formatDate(state.nextFarmTime)}</div>
+        </div>
+        <div>
+            <h4>Action</h4>
+            ${state.currentPage === CurrentPageEnum.FIELDS ? '<button id="addAllFields">Add all fields</button>' : ''}
         </div>
         <br />
         <div class="flex-row">
-            ${Object.entries(villages).map(([id, village]) => {
-        var _c, _d, _e, _f;
-        return `
+            ${Object.entries(villages).map(([id, village]) => `
                 <div class="village-container">
                     <h4>${village.name} (id: ${id}) (${village.position.x}, ${village.position.y})</h4>
                     <br />
@@ -755,22 +840,21 @@ const render = (state) => {
                     <div>Attack alert backoff: ${Utils.formatDate(village.attackAlertBackoff)}</div>
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
                     <br />
-                    <div class="flex-row">
-                        <div>Next custom farm time: ${Utils.formatDate(village.nextCustomFarmTime)}</div>
-                    </div>
                     ${state.currentPage === CurrentPageEnum.BUILDING && state.currentVillageId === village.id && params.get('gid') === '16' && params.get('tt') === '2' ?
-            `<div class="flex-row">
+        `<div class="flex-row">
                             <input id="minCustomFarmMinutes" style="width: 5%">min</input>
                             <input id="maxCustomFarmMinutes" style="width: 5%">max</input>
                             <button id="addCurrentToCustomFarm" class="ml-5">Add Current</button>
                         </div>`
-            : ''}
-                    ${village.customFarm ?
-            `<div>Target: (${(_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.position.x}|${(_d = village.customFarm) === null || _d === void 0 ? void 0 : _d.position.y})</div>
-                        <div>Troops: ${Object.keys(village.customFarm.troops).filter(key => { var _c; return (_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.troops[key]; }).map(key => { var _c; return key + ": " + ((_c = village.customFarm) === null || _c === void 0 ? void 0 : _c.troops[key]); }).join(", ")}</div>
-                        <div>Interval Range: ${(_e = village.customFarm) === null || _e === void 0 ? void 0 : _e.farmIntervalMinutes.min}mins - ${(_f = village.customFarm) === null || _f === void 0 ? void 0 : _f.farmIntervalMinutes.max}mins</div>
-                        <button class="removeCustomFarm" village-id="${id}">x</button>`
-            : ''}
+        : ''}
+                    ${(village.customFarms || []).map((customFarm, idx) => `                    
+                    <div class="flex-row">
+                        <div>Next custom farm time: ${Utils.formatDate(customFarm.nextCustomFarmTime)}</div>
+                    </div>
+                        <div>Target: (${customFarm.position.x}|${customFarm.position.y})</div>
+                        <div>Troops: ${Object.keys(customFarm.troops).filter(key => customFarm.troops[key]).map(key => key + ": " + customFarm.troops[key]).join(", ")}</div>
+                        <div>Interval Range: ${customFarm.farmIntervalMinutes.min}mins - ${customFarm.farmIntervalMinutes.max}mins</div>
+                        <button class="removeCustomFarm" village-id="${id}" idx="${idx}">x</button>`)}
                     <br />
                     <h5>Resources</h5>
                     <div>Lumber: ${village.resources.lumber} Clay: ${village.resources.clay} Iron: ${village.resources.iron} Crop: ${village.resources.crop}</div>
@@ -802,8 +886,7 @@ const render = (state) => {
                         <div>${troop.type} ${troop.count} ${Utils.formatDate(troop.time)}</div>
                     `).join('')}
                 </div>
-            `;
-    }).join('')}
+            `).join('')}
         </div>
     `);
     state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2' &&
@@ -832,21 +915,23 @@ const render = (state) => {
             customFarm.position.y = parseInt($("#yCoordInput").val());
             customFarm.farmIntervalMinutes.min = parseInt($("#minCustomFarmMinutes").val());
             customFarm.farmIntervalMinutes.max = parseInt($("#maxCustomFarmMinutes").val());
-            villages[state.currentVillageId].customFarm = customFarm;
+            customFarm.nextCustomFarmTime = new Date();
+            currentVillage.customFarms = (currentVillage.customFarms || []).concat(customFarm);
             state.villages = villages;
         });
     $('.removeCustomFarm').on('click', (ele) => {
-        var _c;
-        const villages = state.villages;
-        const villageId = (_c = ele.target.attributes.getNamedItem('village-id')) === null || _c === void 0 ? void 0 : _c.value;
-        if (!villageId)
+        var _c, _d, _e;
+        const idx = (_c = ele.target.attributes.getNamedItem('idx')) === null || _c === void 0 ? void 0 : _c.value;
+        const villageId = (_d = ele.target.attributes.getNamedItem('village-id')) === null || _d === void 0 ? void 0 : _d.value;
+        if (!idx || !villageId)
             return;
-        delete villages[villageId].customFarm;
+        const villages = state.villages;
+        (_e = villages[villageId].customFarms) === null || _e === void 0 ? void 0 : _e.splice(Utils.parseIntIgnoreNonNumeric(idx), 1);
         state.villages = villages;
     });
     state.currentPage === CurrentPageEnum.BUILDING && $('.addCurrentToPending').on('click', () => {
         const villages = state.villages;
-        const pendingBuildTasks = villages[state.currentVillageId].pendingBuildTasks;
+        const pendingBuildTasks = currentVillage.pendingBuildTasks;
         const params = new URLSearchParams(window.location.search);
         const aid = params.get('id');
         const gid = params.get('gid');
@@ -883,9 +968,27 @@ const render = (state) => {
         villages[villageId].pendingBuildTasks.splice(Utils.parseIntIgnoreNonNumeric(idx), 1);
         state.villages = villages;
     });
+    state.currentPage === CurrentPageEnum.FIELDS && $('#addAllFields').on('click', (ele) => {
+        const villages = state.villages;
+        const pendingBuildTasks = currentVillage.pendingBuildTasks;
+        for (let aid = 1; aid <= 18; aid++) {
+            pendingBuildTasks.push({
+                aid,
+                gid: -1,
+                resources: {
+                    lumber: 0,
+                    clay: 0,
+                    iron: 0,
+                    crop: 0
+                }
+            });
+        }
+        state.villages = villages;
+    });
     handleFeatureToggle('#toggleAutoLogin', state, 'autoLogin');
     handleFeatureToggle('#toggleAutoScan', state, 'autoScan');
     handleFeatureToggle('#toggleAutoBuild', state, 'autoBuild');
+    handleFeatureToggle('#toggleAutoScout', state, 'autoScout');
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
     handleFeatureToggle('#toggleAutoCustomFarm', state, 'autoCustomFarm');
     handleFeatureToggle('#toggleAlertAttack', state, 'alertAttack');
@@ -905,7 +1008,7 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
             updateCurrentVillageStatus(state);
             if (state.feature.alertAttack) {
                 state.feature.debug && console.log("Checking for attacks");
-                alertAttack(state);
+                checkIncomingAttack(state);
             }
             if (state.feature.alertEmptyBuildQueue) {
                 state.feature.debug && console.log("Checking empty build queue");
@@ -924,6 +1027,15 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
                     state.currentAction = CurrentActionEnum.IDLE;
                 else
                     yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
+            }
+            if ([CurrentActionEnum.IDLE, CurrentActionEnum.SCOUT].includes(state.currentAction)) {
+                if (state.feature.autoScout) {
+                    state.feature.debug && console.log("Attempting scout");
+                    yield scout(state);
+                }
+                else {
+                    state.currentAction = CurrentActionEnum.IDLE;
+                }
             }
             if ([CurrentActionEnum.IDLE, CurrentActionEnum.FARM].includes(state.currentAction)) {
                 if (state.feature.autoFarm) {
