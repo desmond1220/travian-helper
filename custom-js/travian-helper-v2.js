@@ -808,7 +808,7 @@ const render = (state) => {
         
         let total = 0;
         $('.reportInfo.carry').each((_, carry) => total += parseInt($(carry).attr("alt").split('/')[0] || '0'));
-        $(".footer")[0].after(`Total Resouces: ${total}`)
+        $(".footer")[0] && $(".footer")[0].after(`Total Resouces: ${total}`)
     }
     $('#console').html(`
         <div class="flex-row">
