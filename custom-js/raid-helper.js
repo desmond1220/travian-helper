@@ -319,7 +319,10 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
             if (unreadReports.length > 0) {
-                state.feature.autoFarm = false;
+                
+                const feature = state.feature;
+                feature.autoFarm = false;
+                state.feature = feature;
                 fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred, please check the offensive report`);
             }
             state.nextCheckReportTime = Utils.addToDate(new Date(), 0, 1, 0);
