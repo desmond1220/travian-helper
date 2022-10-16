@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/16 11:32:01";
+const BUILD_TIME = "2022/10/16 11:53:12";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -334,7 +334,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Utils.delayClick();
                 startButtonEle[i].click();
             }
-            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(3, 4), Utils.randInt(0, 59));
+            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(3, 5), Utils.randInt(0, 59));
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
@@ -353,95 +353,14 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         else {
-            yield Navigation.goToTown(state, CurrentActionEnum.FARM);
-            return;
-        }
-    }
-});
-const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const params = new URLSearchParams(window.location.search);
-    const villages = state.villages;
-    const village = villages[state.currentVillageId];
-    const customFarm = (_c = village.customFarms) === null || _c === void 0 ? void 0 : _c[idx];
-    if (customFarm) {
-        if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
-            yield Utils.delayClick();
-            $('a[href="/build.php?id=39&gid=16&tt=2"]')[0].click();
-            return;
-        }
-        else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2') {
-            yield Utils.delayClick();
-            const sendTroopButton = $("#ok");
-            const confirmButton = $("#checksum");
-            if (sendTroopButton.length > 0) {
-                Object.keys(customFarm.troops).forEach(troopKey => {
-                    if (customFarm.troops[troopKey]) {
-                        state.feature.debug && (console.log("Troop Key: ", troopKey));
-                        const troopInputEle = $(`input[name="${troopKey}"]`);
-                        troopInputEle[0].click();
-                        troopInputEle.val(customFarm.troops[troopKey]);
-                    }
-                });
-                $("#xCoordInput").val(customFarm.position.x);
-                $("#yCoordInput").val(customFarm.position.y);
-                $("#build > div > form > div.option > label:nth-child(5) > input")[0].click();
-                yield Utils.delayClick();
-                sendTroopButton[0].click();
+            if (new Date(state.nextCheckReportTime) < new Date()) {
+                yield Navigation.goToReport(state, CurrentActionEnum.FARM);
             }
-            else if (confirmButton.length > 0) {
-                yield Utils.delayClick();
-                confirmButton[0].click();
+            else {
+                yield Navigation.goToTown(state, CurrentActionEnum.FARM);
             }
             return;
         }
-        else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
-            && params.get('gid') === '16' && params.get('tt') === '1') {
-            village.customFarms[idx].nextCustomFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(customFarm.farmIntervalMinutes.min, customFarm.farmIntervalMinutes.max), Utils.randInt(0, 59));
-            state.villages = villages;
-            yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
-            return;
-        }
-        else if (state.currentPage === CurrentPageEnum.TOWN) {
-            yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.CUSTOM_FARM);
-            return;
-        }
-        else {
-            yield Navigation.goToTown(state, CurrentActionEnum.CUSTOM_FARM);
-            return;
-        }
-    }
-});
-const customFarm = (state) => __awaiter(void 0, void 0, void 0, function* () {
-    const villages = state.villages;
-    const customFarms = villages[state.currentVillageId].customFarms || [];
-    // Check current village custom farm
-    for (const idxStr in customFarms) {
-        const idx = parseInt(idxStr);
-        const customFarm = customFarms[idx];
-        if (customFarm.nextCustomFarmTime) {
-            // @ts-ignore
-            if (new Date(customFarm.nextCustomFarmTime) < new Date()) {
-                state.feature.debug && console.log("Execute custom farm");
-                yield executeCustomFarm(state, idx);
-                return;
-            }
-        }
-    }
-    // Check other villages
-    const nextVillageIdToCustomFarm = Object.entries(state.villages)
-        .filter(([_, village]) => village.id !== state.currentVillageId &&
-        village.customFarms &&
-        village.customFarms.length > 0 &&
-        village.customFarms.some(customFarm => customFarm.nextCustomFarmTime && new Date(customFarm.nextCustomFarmTime) < new Date())).map(([id, _]) => id)
-        .find(_ => true);
-    if (nextVillageIdToCustomFarm) {
-        state.feature.debug && console.log("Go to village");
-        yield Navigation.goToVillage(state, nextVillageIdToCustomFarm, CurrentActionEnum.NAVIGATE_TO_FIELDS);
-    }
-    else {
-        state.feature.debug && console.log("No custom farm required in other villages");
-        state.currentAction = CurrentActionEnum.IDLE;
     }
 });
 const handleFeatureToggle = (selector, state, key) => {
