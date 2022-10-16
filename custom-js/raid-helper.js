@@ -336,7 +336,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Utils.delayClick();
                 startButtonEle[i].click();
             }
-            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(2, 3), Utils.randInt(0, 59));
+            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(2, 4), Utils.randInt(0, 59));
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
