@@ -807,6 +807,7 @@ const render = (state) => {
             $('#troops-required-50').replaceWith(troops50);
 
         
+        let total = 0;
         // @ts-ignore
         $('.reportInfo.carry').each((_, carry) => total += parseInt($(carry).attr("alt").split('/')[0] || '0'));
         $(".footer")[0].after(`Total Resouces: ${total}`)
