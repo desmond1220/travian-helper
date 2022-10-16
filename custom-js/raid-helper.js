@@ -403,7 +403,6 @@ const render = (state) => {
     }
     if (state.currentPage === CurrentPageEnum.REPORT) {
         const resourcesFromReport = {};
-        const resources = $('.resources').find('span.value');
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
         resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
         resourcesFromReport.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text());

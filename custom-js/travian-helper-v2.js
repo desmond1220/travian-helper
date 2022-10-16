@@ -759,6 +759,7 @@ const handleFeatureToggle = (selector, state, key) => {
     });
 };
 const render = (state) => {
+    updateCurrentPage(state);
     if (state.currentPage === CurrentPageEnum.BUILDING) {
         const btn = '<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>';
         if ($('#addCurrentToPendingInBuilding').length === 0)
@@ -808,7 +809,11 @@ const render = (state) => {
         
         let total = 0;
         $('.reportInfo.carry').each((_, carry) => total += parseInt($(carry).attr("alt").split('/')[0] || '0'));
-        $(".footer")[0] && $(".footer")[0].after(`Total Resouces: ${total}`)
+        const totalResources = `<div id="total-res">Total Resouces: ${total}</div>`
+        if ($('#total-res').length === 0)
+            $(".footer").after(totalResources);
+        else
+            $('#total-res').replaceWith(totalResources);
     }
     $('#console').html(`
         <div class="flex-row">
@@ -1004,7 +1009,6 @@ const render = (state) => {
 };
 const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
     while (true) {
-        updateCurrentPage(state);
         if ([CurrentPageEnum.LOGIN].includes(state.currentPage) && state.feature.autoLogin) {
             state.feature.debug && console.log("Attempt login");
             yield login(state);
