@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/16 10:47:42";
+const BUILD_TIME = "2022/10/16 13:04:42";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -789,7 +789,6 @@ const render = (state) => {
     }
     if (state.currentPage === CurrentPageEnum.REPORT) {
         const resourcesFromReport = {};
-        const resources = $('.resources').find('span.value');
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
         resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
         resourcesFromReport.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text());
@@ -806,6 +805,11 @@ const render = (state) => {
             $(".additionalInformation").after(troops50);
         else
             $('#troops-required-50').replaceWith(troops50);
+
+        
+        // @ts-ignore
+        $('.reportInfo.carry').each((_, carry) => total += parseInt($(carry).attr("alt").split('/')[0] || '0'));
+        $(".footer")[0].after(`Total Resouces: ${total}`)
     }
     $('#console').html(`
         <div class="flex-row">
