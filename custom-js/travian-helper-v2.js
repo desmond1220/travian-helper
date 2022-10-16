@@ -786,8 +786,7 @@ const render = (state) => {
                 $(`.${classNamePrefix}${id} .tjs-pending`).replaceWith(div);
             }
         });
-    }
-    if (state.currentPage === CurrentPageEnum.REPORT) {
+    } else if (state.currentPage === CurrentPageEnum.REPORT) {
         const resourcesFromReport = {};
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
         resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
@@ -808,7 +807,6 @@ const render = (state) => {
 
         
         let total = 0;
-        // @ts-ignore
         $('.reportInfo.carry').each((_, carry) => total += parseInt($(carry).attr("alt").split('/')[0] || '0'));
         $(".footer")[0].after(`Total Resouces: ${total}`)
     }
