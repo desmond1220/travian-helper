@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/16 11:53:12";
+const BUILD_TIME = "2022/10/17 21:28:00";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -125,11 +125,9 @@ StateHandler.INITIAL_STATE = {
     },
     nextFarmTime: new Date(),
     nextCheckReportTime: new Date(),
-    alertedPlusIncomingAttack: false,
+    farmIntervalMinutes: { min: 2, max: 4 },
     telegramChatId: '',
     telegramToken: '',
-    username: '',
-    password: ''
 };
 class Utils {
 }
@@ -317,6 +315,8 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
+            // const unreadReports = $("#overview > tbody").find(".messageStatusUnread")
+            //     .filter((_, msg) => !$($(msg).parent().parent().find('a')[2]).text().includes("Unoccupied oasis"))
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
             if (unreadReports.length > 0) {
                 const feature = state.feature;
@@ -336,7 +336,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Utils.delayClick();
                 startButtonEle[i].click();
             }
-            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(2, 4), Utils.randInt(0, 59));
+            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(3, 5), Utils.randInt(0, 59));
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
@@ -381,26 +381,6 @@ const render = (state) => {
             $('#addCurrentToPendingInBuilding').replaceWith(btn);
     }
     const villages = state.villages;
-    const currentVillage = villages[state.currentVillageId];
-    const params = new URLSearchParams(window.location.search);
-    if (currentVillage && [CurrentPageEnum.FIELDS, CurrentPageEnum.TOWN].includes(state.currentPage)) {
-        const records = currentVillage.pendingBuildTasks.reduce((group, task) => {
-            group[task.aid] = group[task.aid] || 0;
-            group[task.aid]++;
-            return group;
-        }, {});
-        const classNamePrefix = state.currentPage === CurrentPageEnum.FIELDS ? "buildingSlot" : "aid";
-        $('.tjs-pending').remove();
-        Object.entries(records).forEach(([id, count]) => {
-            const div = `<div class="tjs-pending">+${count}</div>`;
-            if ($(`.${classNamePrefix}${id} .tjs-pending`).length === 0) {
-                $(`.${classNamePrefix}${id} .labelLayer`).after(div);
-            }
-            else {
-                $(`.${classNamePrefix}${id} .tjs-pending`).replaceWith(div);
-            }
-        });
-    }
     if (state.currentPage === CurrentPageEnum.REPORT) {
         const resourcesFromReport = {};
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
@@ -430,12 +410,22 @@ const render = (state) => {
             <h4>Summary (Build: ${BUILD_TIME})</h4>
             <div>Current Page: ${state.currentPage} (Last render: ${Utils.formatDate(new Date())})</div>
             <div>Current Action: ${state.currentAction}</div>
+            <div>Interval Range: ${state.farmIntervalMinutes.min}mins - ${state.farmIntervalMinutes.max}mins</div>
+            <div class="flex-row">
+                <input id="minFarmMinutes" style="width: 5%">min</input>
+                <input id="maxFarmMinutes" style="width: 5%">max</input>
+                <button id="updateFarmInterval" class="ml-5">Update</button>
+            </div>
             <div>Next farm: ${Utils.formatDate(state.nextFarmTime)}</div>
             <div>Next check report: ${Utils.formatDate(state.nextCheckReportTime)}</div>
         </div>
     `);
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
     handleFeatureToggle('#toggleDebug', state, 'debug');
+    $('#updateFarmInterval').on('click', () => {
+        state.farmIntervalMinutes.min = parseInt($("#minFarmMinutes").val());
+        state.farmIntervalMinutes.max = parseInt($("#maxFarmMinutes").val());
+    });
 };
 const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
     while (true) {
