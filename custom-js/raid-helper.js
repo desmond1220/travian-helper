@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/17 21:28:00";
+const BUILD_TIME = "2022/10/17 21:35:00";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -336,7 +336,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Utils.delayClick();
                 startButtonEle[i].click();
             }
-            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(3, 5), Utils.randInt(0, 59));
+            state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(state.farmIntervalMinutes.min, state.farmIntervalMinutes.max), Utils.randInt(0, 59));
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
@@ -380,7 +380,6 @@ const render = (state) => {
         else
             $('#addCurrentToPendingInBuilding').replaceWith(btn);
     }
-    const villages = state.villages;
     if (state.currentPage === CurrentPageEnum.REPORT) {
         const resourcesFromReport = {};
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
@@ -423,8 +422,10 @@ const render = (state) => {
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
     handleFeatureToggle('#toggleDebug', state, 'debug');
     $('#updateFarmInterval').on('click', () => {
-        state.farmIntervalMinutes.min = parseInt($("#minFarmMinutes").val());
-        state.farmIntervalMinutes.max = parseInt($("#maxFarmMinutes").val());
+        const farmIntervalMinutes = state.farmIntervalMinutes;
+        farmIntervalMinutes.min = parseInt($("#minFarmMinutes").val());
+        farmIntervalMinutes.max = parseInt($("#maxFarmMinutes").val());
+        state.farmIntervalMinutes = farmIntervalMinutes;
     });
 };
 const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
