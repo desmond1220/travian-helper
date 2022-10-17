@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/17 21:35:00";
+const BUILD_TIME = "2022/10/17 21:44:03";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -422,9 +422,10 @@ const render = (state) => {
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
     handleFeatureToggle('#toggleDebug', state, 'debug');
     $('#updateFarmInterval').on('click', () => {
-        const farmIntervalMinutes = state.farmIntervalMinutes;
-        farmIntervalMinutes.min = parseInt($("#minFarmMinutes").val());
-        farmIntervalMinutes.max = parseInt($("#maxFarmMinutes").val());
+        const farmIntervalMinutes = {
+            min: parseInt($("#minFarmMinutes").val()),
+            max: parseInt($("#maxFarmMinutes").val())
+        };
         state.farmIntervalMinutes = farmIntervalMinutes;
     });
 };
