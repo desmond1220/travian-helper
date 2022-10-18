@@ -800,7 +800,7 @@ const render = (state) => {
         resourcesWithHero.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text()) - (cranny * 0.85);
         resourcesWithHero.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text()) - (cranny * 0.85);
         resourcesWithHero.crop = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[3]).text()) - (cranny * 0.85);
-        resourcesWithHeroSum = Object.values(resourcesWithHero).reduce((a, v) => a + v, 0)
+        const resourcesWithHeroSum = Object.values(resourcesWithHero).reduce((a, v) => a + v, 0)
 
         const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil(resourcesSum / 70)} | ${Math.ceil(resourcesWithHeroSum / 70)} with hero (70 per troop)</div>`;
         if ($('#troops-required-70').length === 0)
