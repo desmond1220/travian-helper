@@ -787,19 +787,27 @@ const render = (state) => {
             }
         });
     } else if (state.currentPage === CurrentPageEnum.REPORT) {
-        const resourcesFromReport = {};
-        resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
-        resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
-        resourcesFromReport.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text());
-        resourcesFromReport.crop = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[3]).text());
-        const sum = resourcesFromReport.lumber + resourcesFromReport.clay + resourcesFromReport.iron + resourcesFromReport.crop;
         const cranny = Utils.parseIntIgnoreNonNumeric($('.rArea').text());
-        const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil((sum - cranny * 4) / 70)} | ${Math.ceil((sum - (cranny * 0.85 * 4)) / 70)} with hero (70 per troop)</div>`;
+        const resources = {};
+        resources.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text()) - cranny;
+        resources.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text()) - cranny;
+        resources.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text()) - cranny;
+        resources.crop = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[3]).text()) - cranny;
+        const resourcesSum = Object.values(resources).reduce((a, v) => a + v, 0)
+
+        const resourcesWithHero = {}
+        resourcesWithHero.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text()) - (cranny * 0.85);
+        resourcesWithHero.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text()) - (cranny * 0.85);
+        resourcesWithHero.iron = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[2]).text()) - (cranny * 0.85);
+        resourcesWithHero.crop = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[3]).text()) - (cranny * 0.85);
+        resourcesWithHeroSum = Object.values(resourcesWithHero).reduce((a, v) => a + v, 0)
+
+        const troops70 = `<div id="troops-required-70">Troops Required: ${Math.ceil(resourcesSum / 70)} | ${Math.ceil(resourcesWithHeroSum / 70)} with hero (70 per troop)</div>`;
         if ($('#troops-required-70').length === 0)
             $(".additionalInformation").after(troops70);
         else
             $('#troops-required-70').replaceWith(troops70);
-        const troops50 = `<div id="troops-required-50">Troops Required: ${Math.ceil((sum - cranny * 4) / 50)} | ${Math.ceil((sum - (cranny * 0.85 * 4)) / 50)} with hero (50 per troop)</div>`;
+        const troops50 = `<div id="troops-required-50">Troops Required: ${Math.ceil(resourcesSum / 50)} | ${Math.ceil(resourcesWithHeroSum / 50)} with hero (50 per troop)</div>`;
         if ($('#troops-required-50').length === 0)
             $(".additionalInformation").after(troops50);
         else
