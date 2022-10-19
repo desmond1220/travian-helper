@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/17 21:44:03";
+const BUILD_TIME = "2022/10/20 00:38:28";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -112,15 +112,11 @@ StateHandler.INITIAL_STATE = {
     currentVillageId: '',
     villages: {},
     feature: {
-        autoLogin: false,
-        autoScan: false,
-        autoBuild: false,
         alertAttack: false,
         alertEmptyBuildQueue: false,
         alertResourceCapacityFull: false,
-        autoScout: false,
         autoFarm: false,
-        autoCustomFarm: false,
+        enableStopOnLoss: true,
         debug: false
     },
     nextFarmTime: new Date(),
@@ -347,7 +343,12 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else if (state.currentPage === CurrentPageEnum.TOWN) {
             if (new Date(state.nextCheckReportTime) < new Date()) {
-                yield Navigation.goToReport(state, CurrentActionEnum.FARM);
+                if (state.feature.enableStopOnLoss) {
+                    yield Navigation.goToReport(state, CurrentActionEnum.FARM);
+                }
+                else {
+                    yield Navigation.goToTown(state, CurrentActionEnum.FARM);
+                }
             }
             else {
                 yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.FARM);
@@ -403,6 +404,7 @@ const render = (state) => {
         <div class="flex-row">
             <h4>Console</h4>
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
+            <input id="toggleEnableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.enableStopOnLoss ? 'checked' : ''}/> Enable stop on loss
             <input id="toggleDebug" class="ml-5" type="checkbox" ${state.feature.debug ? 'checked' : ''}/> Debug
         </div>
         <div>
@@ -420,6 +422,7 @@ const render = (state) => {
         </div>
     `);
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
+    handleFeatureToggle('#toggleEnableStopOnLoss', state, 'enableStopOnLoss');
     handleFeatureToggle('#toggleDebug', state, 'debug');
     $('#updateFarmInterval').on('click', () => {
         const farmIntervalMinutes = {
