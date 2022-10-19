@@ -404,7 +404,7 @@ const render = (state) => {
         <div class="flex-row">
             <h4>Console</h4>
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
-            <input id="toggleDisableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.disableStopOnLoss ? 'checked' : ''}/> Enable stop on loss
+            <input id="toggleDisableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.disableStopOnLoss ? 'checked' : ''}/> Disable stop on loss
             <input id="toggleDebug" class="ml-5" type="checkbox" ${state.feature.debug ? 'checked' : ''}/> Debug
         </div>
         <div>
