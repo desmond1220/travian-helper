@@ -116,7 +116,7 @@ StateHandler.INITIAL_STATE = {
         alertEmptyBuildQueue: false,
         alertResourceCapacityFull: false,
         autoFarm: false,
-        enableStopOnLoss: true,
+        disableStopOnLoss: false,
         debug: false
     },
     nextFarmTime: new Date(),
@@ -343,7 +343,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else if (state.currentPage === CurrentPageEnum.TOWN) {
             if (new Date(state.nextCheckReportTime) < new Date()) {
-                if (state.feature.enableStopOnLoss) {
+                if (!state.feature.disableStopOnLoss) {
                     yield Navigation.goToReport(state, CurrentActionEnum.FARM);
                 }
                 else {
@@ -404,7 +404,7 @@ const render = (state) => {
         <div class="flex-row">
             <h4>Console</h4>
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
-            <input id="toggleEnableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.enableStopOnLoss ? 'checked' : ''}/> Enable stop on loss
+            <input id="toggleDisableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.disableStopOnLoss ? 'checked' : ''}/> Enable stop on loss
             <input id="toggleDebug" class="ml-5" type="checkbox" ${state.feature.debug ? 'checked' : ''}/> Debug
         </div>
         <div>
@@ -422,7 +422,7 @@ const render = (state) => {
         </div>
     `);
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
-    handleFeatureToggle('#toggleEnableStopOnLoss', state, 'enableStopOnLoss');
+    handleFeatureToggle('#toggleDisableStopOnLoss', state, 'disableStopOnLoss');
     handleFeatureToggle('#toggleDebug', state, 'debug');
     $('#updateFarmInterval').on('click', () => {
         const farmIntervalMinutes = {
