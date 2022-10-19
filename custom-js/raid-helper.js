@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 // @ts-ignore
-const BUILD_TIME = "2022/10/20 00:38:28";
+const BUILD_TIME = "2022/10/20 00:54:01";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -116,7 +116,7 @@ StateHandler.INITIAL_STATE = {
         alertEmptyBuildQueue: false,
         alertResourceCapacityFull: false,
         autoFarm: false,
-        disableStopOnLoss: false,
+        disableStopOnLoss: true,
         debug: false
     },
     nextFarmTime: new Date(),
@@ -342,13 +342,8 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         else if (state.currentPage === CurrentPageEnum.TOWN) {
-            if (new Date(state.nextCheckReportTime) < new Date()) {
-                if (!state.feature.disableStopOnLoss) {
-                    yield Navigation.goToReport(state, CurrentActionEnum.FARM);
-                }
-                else {
-                    yield Navigation.goToTown(state, CurrentActionEnum.FARM);
-                }
+            if (!state.feature.disableStopOnLoss && new Date(state.nextCheckReportTime) < new Date()) {
+                yield Navigation.goToReport(state, CurrentActionEnum.FARM);
             }
             else {
                 yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.FARM);
@@ -356,7 +351,7 @@ const farm = (state) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         else {
-            if (new Date(state.nextCheckReportTime) < new Date()) {
+            if (!state.feature.disableStopOnLoss && new Date(state.nextCheckReportTime) < new Date()) {
                 yield Navigation.goToReport(state, CurrentActionEnum.FARM);
             }
             else {
