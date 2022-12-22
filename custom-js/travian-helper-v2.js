@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 22:06:22";
+const BUILD_TIME = "2022/12/22 22:11:00";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -751,6 +751,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
+            yield Utils.waitForElement('td.sub ');
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
             const unreadOasisReports = unreadReports.filter((_, msg) => $(msg).parent().parent().find('div > a').text().includes("oasis"));
             const unreadNonOasisReports = unreadReports.filter((_, msg) => !$(msg).parent().parent().find('div > a').text().includes("oasis"));
