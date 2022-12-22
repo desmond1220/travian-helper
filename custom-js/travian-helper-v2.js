@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 20:02:06";
+const BUILD_TIME = "2022/12/22 21:48:33";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -68,6 +68,7 @@ var CurrentPageEnum;
     CurrentPageEnum["REPORT"] = "REPORT";
     CurrentPageEnum["OFF_REPORT"] = "OFF_REPORT";
     CurrentPageEnum["SCOUT_REPORT"] = "SCOUT_REPORT";
+    CurrentPageEnum["POSITION_DETAILS"] = "POSITION_DETAILS";
     CurrentPageEnum["UNKNOWN"] = "UNKNOWN";
 })(CurrentPageEnum || (CurrentPageEnum = {}));
 var CurrentActionEnum;
@@ -80,6 +81,7 @@ var CurrentActionEnum;
     CurrentActionEnum["OASIS_FARM"] = "OASIS_FARM";
     CurrentActionEnum["EVADE"] = "EVADE";
     CurrentActionEnum["CUSTOM_FARM"] = "CUSTOM_FARM";
+    CurrentActionEnum["REMOVE_LOSS_FROM_FARM_LIST"] = "REMOVE_LOSS_FROM_FARM_LIST";
 })(CurrentActionEnum || (CurrentActionEnum = {}));
 var FarmType;
 (function (FarmType) {
@@ -132,6 +134,7 @@ StateHandler.INITIAL_STATE = {
         autoCustomFarm: false,
         randomAction: false,
         disableDelayClick: false,
+        removeLostFromFarmList: false,
         debug: false
     },
     nextVillageRotationTime: new Date(),
@@ -161,7 +164,7 @@ Utils.sleep = (ms) => {
 };
 Utils.delayClick = (enabled) => __awaiter(void 0, void 0, void 0, function* () {
     if (enabled)
-        yield Utils.sleep(Utils.randInt(1000, 2000));
+        yield Utils.sleep(Utils.randInt(1000, 1000));
 });
 Utils.addToDate = (date, hour, minute, second) => {
     return new Date(date.getTime() + hour * 60 * 60 * 1000 + minute * 60 * 1000 + second * 1000);
@@ -201,6 +204,29 @@ Utils.sumRecord = (r1, r2) => {
 };
 Utils.groupByAndSum = (records) => {
     return records.reduce((res, value) => Utils.sumRecord(res, value), {});
+};
+Utils.waitForElement = (selector, timeout = 5000) => {
+    return new Promise(resolve => {
+        if ($(selector) && $(selector).length > 0) {
+            return resolve($(selector));
+        }
+        const timeoutCallback = setTimeout(() => {
+            observer.disconnect();
+            Promise.reject();
+        }, timeout);
+        const onDomChange = (mutations, observer) => {
+            if ($(selector) && $(selector).length > 0) {
+                resolve($(selector));
+                clearTimeout(timeoutCallback);
+                observer.disconnect();
+            }
+        };
+        const observer = new MutationObserver(onDomChange);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
 };
 class Navigation {
 }
@@ -729,22 +755,29 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             const unreadOasisReports = unreadReports.filter((_, msg) => $(msg).parent().parent().find('div > a').text().includes("oasis"));
             const unreadNonOasisReports = unreadReports.filter((_, msg) => !$(msg).parent().parent().find('div > a').text().includes("oasis"));
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
-            if (unreadOasisReports.length > 0) {
-                if (!state.feature.disableStopOnLoss) {
-                    const feature = state.feature;
-                    feature.autoFarmOasis = false;
-                    state.feature = feature;
+            if (unreadReports.length > 0) {
+                if (state.feature.removeLostFromFarmList) {
+                    yield Navigation.goToReport(state, CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST);
                 }
-                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during oasis farm, please check the offensive report`);
             }
-            if (unreadNonOasisReports.length > 0) {
-                if (!state.feature.disableStopOnLoss) {
-                    const feature = state.feature;
-                    feature.autoFarm = false;
-                    state.feature = feature;
-                }
-                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during farm, please check the offensive report`);
-            }
+            // if (unreadOasisReports.length > 0) {
+            //     if (!state.feature.disableStopOnLoss) {
+            //         const feature = state.feature;
+            //         feature.autoFarmOasis = false;
+            //
+            //         state.feature = feature;
+            //     }
+            //     fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during oasis farm, please check the offensive report`)
+            // }
+            // if (unreadNonOasisReports.length > 0) {
+            //     if (!state.feature.disableStopOnLoss) {
+            //         const feature = state.feature;
+            //         feature.autoFarm = false;
+            //
+            //         state.feature = feature;
+            //     }
+            //     fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during farm, please check the offensive report`)
+            // }
             state.nextCheckReportTime = Utils.addToDate(new Date(), 0, 1, 0);
             yield Navigation.goToTown(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM);
             return;
@@ -1003,6 +1036,42 @@ const randomAction = (state) => __awaiter(void 0, void 0, void 0, function* () {
     state.feature.debug && console.log(`Go to ${target}`);
     $(`a[href='${target}']`)[0].click();
 });
+const removeLossFromFarmList = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    state.feature.debug && console.log("Remove Loss from Farm List");
+    try {
+        if (state.currentPage === CurrentPageEnum.REPORT) {
+            yield Utils.delayClick(!state.feature.disableDelayClick);
+            $('a[href="/report/offensive"]')[0].click();
+            return;
+        }
+        else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                const villageLink = $('div.role.defender a.village');
+                villageLink[0].click();
+            }
+            return;
+        }
+        else if (state.currentPage === CurrentPageEnum.POSITION_DETAILS) {
+            const options = $('div.option');
+            if (options.length >= 5) {
+                const existingFarmList = $('#crud-raidlist-button > span');
+                existingFarmList.click();
+                const deleteIcon = yield Utils.waitForElement('svg.deleteIcon');
+                deleteIcon[0].click();
+                const confirmDelete = yield Utils.waitForElement('button.textButtonV1.grey.negativeAction');
+                confirmDelete[0].click();
+            }
+            yield Navigation.goToReport(state, CurrentActionEnum.IDLE);
+            return;
+        }
+    }
+    catch (e) {
+        yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
+        return;
+    }
+});
 // const autoAdventure = () => {
 //     const adventureButton = $('a[href="/hero/adventures"]')
 //     const adventureCount = adventureButton.parent().find('div[class="content"]')
@@ -1010,6 +1079,10 @@ const randomAction = (state) => __awaiter(void 0, void 0, void 0, function* () {
 //
 // }
 const render = (state) => {
+    if ([CurrentPageEnum.REPORT, CurrentPageEnum.OFF_REPORT, CurrentPageEnum.POSITION_DETAILS].includes(state.currentPage) &&
+        CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST === state.currentAction) {
+        removeLossFromFarmList(state);
+    }
     if (state.currentPage === CurrentPageEnum.BUILDING) {
         const btn = '<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>';
         if ($('#addCurrentToPendingInBuilding').length === 0)
@@ -1107,6 +1180,7 @@ const render = (state) => {
             <input id="toggleAlertEmptyBuildQueue" class="ml-5" type="checkbox" ${state.feature.alertEmptyBuildQueue ? 'checked' : ''}/> Alert empty build queue
             <input id="toggleAlertResourceCapacityFull" class="ml-5" type="checkbox" ${state.feature.alertResourceCapacityFull ? 'checked' : ''}/> Alert resource capacity full
             <input id="toggleDisableDelayClick" class="ml-5" type="checkbox" ${state.feature.disableDelayClick ? 'checked' : ''}/> Disable Delay Click
+            <input id="toggleRemoveLostFromFarmList" class="ml-5" type="checkbox" ${state.feature.removeLostFromFarmList ? 'checked' : ''}> Remove Lost From Farm List
             <input id="toggleRandomAction" class="ml-5" type="checkbox" ${state.feature.randomAction ? 'checked' : ''}/> Random Action
             <input id="toggleDebug" class="ml-5" type="checkbox" ${state.feature.debug ? 'checked' : ''}/> Debug
         </div>
@@ -1365,6 +1439,7 @@ const render = (state) => {
     handleFeatureToggle('#toggleAlertResourceCapacityFull', state, 'alertResourceCapacityFull');
     handleFeatureToggle('#toggleRandomAction', state, 'randomAction');
     handleFeatureToggle('#toggleDisableDelayClick', state, 'disableDelayClick');
+    handleFeatureToggle('#toggleRemoveLostFromFarmList', state, 'removeLostFromFarmList');
     handleFeatureToggle('#toggleDebug', state, 'debug');
 };
 const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
