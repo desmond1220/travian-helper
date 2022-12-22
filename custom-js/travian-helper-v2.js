@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 23:07:20";
+const BUILD_TIME = "2022/12/23 01:58:32";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -81,7 +81,6 @@ var CurrentActionEnum;
     CurrentActionEnum["OASIS_FARM"] = "OASIS_FARM";
     CurrentActionEnum["EVADE"] = "EVADE";
     CurrentActionEnum["CUSTOM_FARM"] = "CUSTOM_FARM";
-    CurrentActionEnum["REMOVE_LOSS_FROM_FARM_LIST"] = "REMOVE_LOSS_FROM_FARM_LIST";
 })(CurrentActionEnum || (CurrentActionEnum = {}));
 var FarmType;
 (function (FarmType) {
@@ -749,53 +748,55 @@ const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function* () {
     if ((new Date(state.nextFarmTime) < new Date() && !targetPrefix) || (new Date(state.nextFarmOasisTime) < new Date() && targetPrefix)) {
         const params = new URLSearchParams(window.location.search);
+        if (!(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
+            $('#sidebarBoxLinklist li').each((_, ele) => {
+                const name = $(ele).find('.name').text();
+                const href = $(ele).find('a').attr('href');
+                if (name === "Farm List") {
+                    $(`a[href='${href}']`)[0].click();
+                }
+            });
+        }
         if (state.currentPage === CurrentPageEnum.REPORT) {
             yield Utils.delayClick(!state.feature.disableDelayClick);
             $('a[href="/report/offensive"]')[0].click();
             return;
         }
         else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
-            yield Utils.waitForElement("#overview > tbody");
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
             const unreadOasisReports = unreadReports.filter((_, msg) => $(msg).parent().parent().find('div > a').text().includes("oasis"));
             const unreadNonOasisReports = unreadReports.filter((_, msg) => !$(msg).parent().parent().find('div > a').text().includes("oasis"));
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
-            if (unreadReports.length > 0) {
-                if (state.feature.removeLostFromFarmList) {
-                    const unreadList = unreadReports.map((_, e) => $(e).parent().parent().find('div > a')[0]);
-                    const dedupUnreadList = [];
-                    unreadList.each((_, ele) => {
-                        if (!dedupUnreadList.some(ul => ul.text() == $(ele).text())) {
-                            dedupUnreadList.push($(ele));
-                        }
-                    });
-                    removeLossFromFarmList(state, dedupUnreadList.map(e => $(e)[0]));
+            if (unreadOasisReports.length > 0) {
+                if (!state.feature.disableStopOnLoss) {
+                    const feature = state.feature;
+                    feature.autoFarmOasis = false;
+                    state.feature = feature;
                 }
+                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during oasis farm, please check the offensive report`);
             }
-            // if (unreadOasisReports.length > 0) {
-            //     if (!state.feature.disableStopOnLoss) {
-            //         const feature = state.feature;
-            //         feature.autoFarmOasis = false;
-            //
-            //         state.feature = feature;
-            //     }
-            //     fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during oasis farm, please check the offensive report`)
-            // }
-            // if (unreadNonOasisReports.length > 0) {
-            //     if (!state.feature.disableStopOnLoss) {
-            //         const feature = state.feature;
-            //         feature.autoFarm = false;
-            //
-            //         state.feature = feature;
-            //     }
-            //     fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during farm, please check the offensive report`)
-            // }
+            if (unreadNonOasisReports.length > 0) {
+                if (!state.feature.disableStopOnLoss) {
+                    const feature = state.feature;
+                    feature.autoFarm = false;
+                    state.feature = feature;
+                }
+                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during farm, please check the offensive report`);
+            }
             state.nextCheckReportTime = Utils.addToDate(new Date(), 0, 1, 0);
             yield Navigation.goToTown(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM);
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
             const allStartButtons = yield Utils.waitForElement('.startButton[value=Start]');
+            if (state.feature.removeLostFromFarmList) {
+                const lastRaidLost = $('td.lastRaid > div > img.iReport.iReport3').filter((_, ele) => $(ele).parent().parent().css('opacity') !== '0.4');
+                if (lastRaidLost.length > 0) {
+                    lastRaidLost.each((_, ele) => $(ele).parent().parent().parent().find('input')[0].click());
+                    const deactivateButtons = yield Utils.waitForElement('button:contains("Deactivate selected")');
+                    deactivateButtons.each((_, ele) => $(ele)[0].click());
+                }
+            }
             const allStartButtonsEle = allStartButtons.filter((_, button) => {
                 const text = $(button).parent().parent().find('.listName').find('span').text();
                 return text !== "Scout" && ((!targetPrefix && !text.startsWith("Oasis")) || (!!targetPrefix && text.startsWith(targetPrefix)));
@@ -1048,47 +1049,6 @@ const randomAction = (state) => __awaiter(void 0, void 0, void 0, function* () {
     state.currentAction = CurrentActionEnum.NAVIGATE_TO_FIELDS;
     state.feature.debug && console.log(`Go to ${target}`);
     $(`a[href='${target}']`)[0].click();
-});
-const removeLossFromFarmList = (state, unreadList = []) => __awaiter(void 0, void 0, void 0, function* () {
-    state.feature.debug && console.log("Remove Loss from Farm List");
-    try {
-        if (state.currentPage === CurrentPageEnum.REPORT) {
-            yield Utils.delayClick(!state.feature.disableDelayClick);
-            $('a[href="/report/offensive"]')[0].click();
-            state.currentAction = CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST;
-            return;
-        }
-        else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
-            state.currentAction = CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST;
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            if (id) {
-                const villageLink = $('div.role.defender a.village');
-                villageLink[0].click();
-            }
-            else {
-                unreadList[0].click();
-            }
-            return;
-        }
-        else if (state.currentPage === CurrentPageEnum.POSITION_DETAILS) {
-            const options = $('div.option');
-            if (options.length >= 5) {
-                const existingFarmList = $('#crud-raidlist-button > span');
-                existingFarmList.click();
-                const deleteIcon = yield Utils.waitForElement('svg.deleteIcon');
-                deleteIcon[0].click();
-                const confirmDelete = yield Utils.waitForElement('button.textButtonV1.grey.negativeAction');
-                confirmDelete[0].click();
-            }
-            yield Navigation.goToReport(state, CurrentActionEnum.IDLE);
-            return;
-        }
-    }
-    catch (e) {
-        yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
-        return;
-    }
 });
 // const autoAdventure = () => {
 //     const adventureButton = $('a[href="/hero/adventures"]')
@@ -1498,9 +1458,6 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 else {
                     state.currentAction = CurrentActionEnum.IDLE;
                 }
-            }
-            if (CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST === state.currentAction) {
-                removeLossFromFarmList(state);
             }
             if ([CurrentActionEnum.IDLE, CurrentActionEnum.FARM].includes(state.currentAction)) {
                 if (state.feature.autoFarm) {
