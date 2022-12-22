@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 02:10:44";
+const BUILD_TIME = "2022/12/23 02:18:48";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -791,9 +791,11 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
             const allStartButtons = yield Utils.waitForElement('.startButton[value=Start]');
             if (state.feature.removeLostFromFarmList) {
+                yield Utils.delayClick(!state.feature.disableDelayClick);
                 const lastRaidLost = $('td.lastRaid > div > img.iReport.iReport3').filter((_, ele) => $(ele).parent().parent().css('opacity') !== '0.4');
                 if (lastRaidLost.length > 0) {
                     lastRaidLost.each((_, ele) => $(ele).parent().parent().parent().find('input')[0].click());
+                    yield Utils.delayClick(!state.feature.disableDelayClick);
                     const deactivateButtons = yield Utils.waitForElement('button:contains("Deactivate selected")');
                     deactivateButtons.each((_, ele) => $(ele)[0].click());
                 }
