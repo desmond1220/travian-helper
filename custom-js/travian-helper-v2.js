@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 01:58:32";
+const BUILD_TIME = "2022/12/23 02:04:25";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -750,7 +750,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
         const params = new URLSearchParams(window.location.search);
         if (!(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
             $('#sidebarBoxLinklist li').each((_, ele) => {
-                const name = $(ele).find('.name').text();
+                const name = $(ele).find('.name').text().trim();
                 const href = $(ele).find('a').attr('href');
                 if (name === "Farm List") {
                     $(`a[href='${href}']`)[0].click();
