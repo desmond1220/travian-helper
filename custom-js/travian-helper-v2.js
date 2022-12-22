@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 21:48:33";
+const BUILD_TIME = "2022/12/22 21:54:22";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -783,13 +783,14 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
-            const startButtonEle = $('.startButton[value=Start]').filter((_, button) => {
+            const allStartButtons = yield Utils.waitForElement('.startButton[value=Start]');
+            const allStartButtonsEle = allStartButtons.filter((_, button) => {
                 const text = $(button).parent().parent().find('.listName').find('span').text();
                 return text !== "Scout" && ((!targetPrefix && !text.startsWith("Oasis")) || (!!targetPrefix && text.startsWith(targetPrefix)));
             });
-            for (let i = 0; i < startButtonEle.length; i++) {
+            for (let i = 0; i < allStartButtonsEle.length; i++) {
                 yield Utils.delayClick(!state.feature.disableDelayClick);
-                startButtonEle[i].click();
+                allStartButtonsEle[i].click();
             }
             if (!targetPrefix) {
                 state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(state.farmIntervalMinutes.min, state.farmIntervalMinutes.max), Utils.randInt(0, 59));
