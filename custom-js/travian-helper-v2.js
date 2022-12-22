@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 22:27:47";
+const BUILD_TIME = "2022/12/22 22:36:33";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -216,9 +216,13 @@ Utils.waitForElement = (selector, timeout = 5000) => {
         }, timeout);
         const onDomChange = (mutations, observer) => {
             if ($(selector) && $(selector).length > 0) {
+                console.log("Found");
                 resolve($(selector));
                 clearTimeout(timeoutCallback);
                 observer.disconnect();
+            }
+            else {
+                console.log("Checking");
             }
         };
         const observer = new MutationObserver(onDomChange);
