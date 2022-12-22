@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 22:11:00";
+const BUILD_TIME = "2022/12/22 22:27:47";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -751,7 +751,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
-            yield Utils.waitForElement('td.sub ');
+            yield Utils.waitForElement("#overview > tbody");
             const unreadReports = $("#overview > tbody").find(".messageStatusUnread");
             const unreadOasisReports = unreadReports.filter((_, msg) => $(msg).parent().parent().find('div > a').text().includes("oasis"));
             const unreadNonOasisReports = unreadReports.filter((_, msg) => !$(msg).parent().parent().find('div > a').text().includes("oasis"));
@@ -843,13 +843,13 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                 yield Navigation.goToVillage(state, villageRequireEvade.id, CurrentActionEnum.EVADE);
                 return;
             }
-            if ($('.error').length > 0) {
+            if ((yield Utils.waitForElement('.error', 2000)).length > 0) {
                 yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
                 return;
             }
             yield Utils.delayClick(!state.feature.disableDelayClick);
-            const sendTroopButton = $("#ok");
-            const confirmButton = $("#checksum");
+            const sendTroopButton = yield Utils.waitForElement("#ok", 1000);
+            const confirmButton = yield Utils.waitForElement("#checksum", 1000);
             if (sendTroopButton.length > 0) {
                 let needSendTroop = false;
                 $("#troops > tbody").find("td").each((column, td) => {
@@ -911,8 +911,8 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2') {
             yield Utils.delayClick(!state.feature.disableDelayClick);
-            const sendTroopButton = $("#ok");
-            const confirmButton = $("#checksum");
+            const sendTroopButton = yield Utils.waitForElement("#ok");
+            const confirmButton = yield Utils.waitForElement("#checksum");
             if (sendTroopButton.length > 0) {
                 for (const troopKey of Object.keys(customFarm.troops)) {
                     if (customFarm.troops[troopKey]) {
