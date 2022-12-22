@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 21:54:22";
+const BUILD_TIME = "2022/12/22 22:06:22";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -757,7 +757,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
             if (unreadReports.length > 0) {
                 if (state.feature.removeLostFromFarmList) {
-                    yield Navigation.goToReport(state, CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST);
+                    removeLossFromFarmList(state);
                 }
             }
             // if (unreadOasisReports.length > 0) {
@@ -1043,9 +1043,11 @@ const removeLossFromFarmList = (state) => __awaiter(void 0, void 0, void 0, func
         if (state.currentPage === CurrentPageEnum.REPORT) {
             yield Utils.delayClick(!state.feature.disableDelayClick);
             $('a[href="/report/offensive"]')[0].click();
+            state.currentAction = CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST;
             return;
         }
         else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
+            state.currentAction = CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST;
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
             if (id) {
@@ -1080,10 +1082,6 @@ const removeLossFromFarmList = (state) => __awaiter(void 0, void 0, void 0, func
 //
 // }
 const render = (state) => {
-    if ([CurrentPageEnum.REPORT, CurrentPageEnum.OFF_REPORT, CurrentPageEnum.POSITION_DETAILS].includes(state.currentPage) &&
-        CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST === state.currentAction) {
-        removeLossFromFarmList(state);
-    }
     if (state.currentPage === CurrentPageEnum.BUILDING) {
         const btn = '<button id="addCurrentToPendingInBuilding" class="tjs-btn addCurrentToPending">Add to queue</button>';
         if ($('#addCurrentToPendingInBuilding').length === 0)
@@ -1485,6 +1483,9 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 else {
                     state.currentAction = CurrentActionEnum.IDLE;
                 }
+            }
+            if (CurrentActionEnum.REMOVE_LOSS_FROM_FARM_LIST === state.currentAction) {
+                removeLossFromFarmList(state);
             }
             if ([CurrentActionEnum.IDLE, CurrentActionEnum.FARM].includes(state.currentAction)) {
                 if (state.feature.autoFarm) {
