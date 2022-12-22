@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/22 22:36:33";
+const BUILD_TIME = "2022/12/22 23:07:20";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -762,7 +762,14 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
             state.feature.debug && console.log("Unread report: " + unreadReports.length);
             if (unreadReports.length > 0) {
                 if (state.feature.removeLostFromFarmList) {
-                    removeLossFromFarmList(state);
+                    const unreadList = unreadReports.map((_, e) => $(e).parent().parent().find('div > a')[0]);
+                    const dedupUnreadList = [];
+                    unreadList.each((_, ele) => {
+                        if (!dedupUnreadList.some(ul => ul.text() == $(ele).text())) {
+                            dedupUnreadList.push($(ele));
+                        }
+                    });
+                    removeLossFromFarmList(state, dedupUnreadList.map(e => $(e)[0]));
                 }
             }
             // if (unreadOasisReports.length > 0) {
@@ -1042,7 +1049,7 @@ const randomAction = (state) => __awaiter(void 0, void 0, void 0, function* () {
     state.feature.debug && console.log(`Go to ${target}`);
     $(`a[href='${target}']`)[0].click();
 });
-const removeLossFromFarmList = (state) => __awaiter(void 0, void 0, void 0, function* () {
+const removeLossFromFarmList = (state, unreadList = []) => __awaiter(void 0, void 0, void 0, function* () {
     state.feature.debug && console.log("Remove Loss from Farm List");
     try {
         if (state.currentPage === CurrentPageEnum.REPORT) {
@@ -1058,6 +1065,9 @@ const removeLossFromFarmList = (state) => __awaiter(void 0, void 0, void 0, func
             if (id) {
                 const villageLink = $('div.role.defender a.village');
                 villageLink[0].click();
+            }
+            else {
+                unreadList[0].click();
             }
             return;
         }
