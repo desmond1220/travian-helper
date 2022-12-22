@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 02:18:48";
+const BUILD_TIME = "2022/12/23 02:25:17";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1505,6 +1505,9 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const initialize = () => {
     const handler = new StateHandler();
     const state = new Proxy(StateHandler.INITIAL_STATE, handler);
+    if ($('#logo').length === 0) {
+        location.reload();
+    }
     handler.setCallback(() => render(state));
     createStyle();
     createContainer();
