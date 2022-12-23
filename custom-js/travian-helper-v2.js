@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 13:05:46";
+const BUILD_TIME = "2022/12/23 14:23:42";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -59,6 +59,308 @@ const GID_NAME_MAP = {
     "40": "Wonder of the World",
     "46": "Hospital"
 };
+const NEW_VILLAGE_LIST = [
+    // {
+    //     aid: 26,
+    //     gid: 15,
+    //     resources: {
+    //         lumber: 70,
+    //         clay: 40,
+    //         iron: 60,
+    //         crop: 20
+    //     }
+    // },
+    {
+        aid: 39,
+        gid: 16,
+        resources: {
+            lumber: 110,
+            clay: 160,
+            iron: 90,
+            crop: 70
+        }
+    },
+    {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 90,
+            clay: 50,
+            iron: 75,
+            crop: 25
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 115,
+            clay: 65,
+            iron: 100,
+            crop: 25
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 145,
+            clay: 85,
+            iron: 125,
+            crop: 40
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 190,
+            clay: 105,
+            iron: 160,
+            crop: 55
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 130,
+            clay: 160,
+            iron: 90,
+            crop: 40
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 165,
+            clay: 205,
+            iron: 115,
+            crop: 50
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 215,
+            clay: 260,
+            iron: 145,
+            crop: 65
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 80,
+            clay: 100,
+            iron: 70,
+            crop: 20
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 100,
+            clay: 130,
+            iron: 90,
+            crop: 25
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 275,
+            clay: 335,
+            iron: 190,
+            crop: 85
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 350,
+            clay: 430,
+            iron: 240,
+            crop: 105
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 445,
+            clay: 550,
+            iron: 310,
+            crop: 135
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 130,
+            clay: 165,
+            iron: 115,
+            crop: 35
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 170,
+            clay: 210,
+            iron: 145,
+            crop: 40
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 240,
+            clay: 135,
+            iron: 205,
+            crop: 70
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 310,
+            clay: 175,
+            iron: 265,
+            crop: 90
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 395,
+            clay: 225,
+            iron: 340,
+            crop: 115
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 505,
+            clay: 290,
+            iron: 430,
+            crop: 145
+        }
+    }, {
+        aid: 26,
+        gid: 15,
+        resources: {
+            lumber: 645,
+            clay: 370,
+            iron: 555,
+            crop: 185
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 570,
+            clay: 705,
+            iron: 375,
+            crop: 175
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 730,
+            clay: 900,
+            iron: 505,
+            crop: 225
+        }
+    }, {
+        aid: 33,
+        gid: 10,
+        resources: {
+            lumber: 935,
+            clay: 1155,
+            iron: 650,
+            crop: 290
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 215,
+            clay: 270,
+            iron: 190,
+            crop: 55
+        }
+    }, {
+        aid: 25,
+        gid: 11,
+        resources: {
+            lumber: 275,
+            clay: 345,
+            iron: 240,
+            crop: 70
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 80,
+            clay: 70,
+            iron: 120,
+            crop: 70
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 100,
+            clay: 90,
+            iron: 155,
+            crop: 90
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 130,
+            clay: 115,
+            iron: 195,
+            crop: 115
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 170,
+            clay: 145,
+            iron: 250,
+            crop: 145
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 215,
+            clay: 190,
+            iron: 320,
+            crop: 190
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 275,
+            clay: 240,
+            iron: 410,
+            crop: 240
+        }
+    }, {
+        aid: 27,
+        gid: 17,
+        resources: {
+            lumber: 350,
+            clay: 310,
+            iron: 530,
+            crop: 310
+        }
+    },
+];
 var CurrentPageEnum;
 (function (CurrentPageEnum) {
     CurrentPageEnum["LOGIN"] = "LOGIN";
@@ -257,7 +559,7 @@ Navigation.goToBuilding = (state, aid, gid, action) => __awaiter(void 0, void 0,
             $('#villageContent > div.buildingSlot.a40.top > svg > g.hoverShape > path').trigger('click');
         }
         else {
-            $(`a[href="/build.php?id=${aid}&gid=${gid}"]`)[0].click();
+            $(`a[href="/build.php?id=${aid}"]`)[0].click();
         }
         return true;
     }
@@ -703,6 +1005,13 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 state.villages = villages;
                 bulidButton.trigger('click');
                 return;
+            }
+        }
+        else if (state.currentPage === CurrentPageEnum.BUILDING
+            && !gid) {
+            const checksum = village.checksum;
+            if (checksum) {
+                window.location.href = `/dorf2.php?id=${task.aid}&gid=${task.gid}&action=build&checksum=${checksum}`;
             }
         }
     }
@@ -1189,6 +1498,7 @@ const render = (state) => {
         <div>
             <h4>Action</h4>
             ${state.currentPage === CurrentPageEnum.FIELDS ? '<button id="addAllFields">Add all fields</button>' : ''}
+            ${state.currentPage === CurrentPageEnum.TOWN ? '<button id="addListBuildings">Add List Buildings</button>' : ''}
             <button id="copyState">Copy State</button>
             <button id="pasteState">Paste State</button>
         </div>
@@ -1380,6 +1690,31 @@ const render = (state) => {
                     crop: 0
                 }
             });
+        }
+        state.villages = villages;
+    });
+    $('#addListBuildings').on('click', (ele) => {
+        const villages = state.villages;
+        const pendingBuildTasks = currentVillage.pendingBuildTasks;
+        let buildingCount = 0;
+        for (let i = 0; i < 7; i++) {
+            for (let j = 0; j < 5; j++) {
+                if (buildingCount < NEW_VILLAGE_LIST.length) {
+                    pendingBuildTasks.push(NEW_VILLAGE_LIST[buildingCount++]);
+                }
+            }
+            for (let aid = 1; aid <= 18; aid++) {
+                pendingBuildTasks.push({
+                    aid,
+                    gid: -1,
+                    resources: {
+                        lumber: 0,
+                        clay: 0,
+                        iron: 0,
+                        crop: 0
+                    }
+                });
+            }
         }
         state.villages = villages;
     });
