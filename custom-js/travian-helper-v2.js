@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 14:23:42";
+const BUILD_TIME = "2022/12/23 14:34:23";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1498,7 +1498,7 @@ const render = (state) => {
         <div>
             <h4>Action</h4>
             ${state.currentPage === CurrentPageEnum.FIELDS ? '<button id="addAllFields">Add all fields</button>' : ''}
-            ${state.currentPage === CurrentPageEnum.TOWN ? '<button id="addListBuildings">Add List Buildings</button>' : ''}
+            <button id="addListBuildings">Add List Buildings</button>
             <button id="copyState">Copy State</button>
             <button id="pasteState">Paste State</button>
         </div>
