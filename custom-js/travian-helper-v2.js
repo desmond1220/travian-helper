@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 02:25:17";
+const BUILD_TIME = "2022/12/23 13:05:46";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -411,6 +411,7 @@ const updateVillageList = (state) => {
             id: '',
             name: '',
             position: { x: 0, y: 0 },
+            checksum: '',
             index: -1,
             currentBuildTasks: [],
             pendingBuildTasks: [],
@@ -658,6 +659,7 @@ const getNextBuildTask = (village, plusEnabled) => {
         return targetTask;
 };
 const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     // Try building in current village
     const villages = state.villages;
     const village = villages[state.currentVillageId];
@@ -693,6 +695,8 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
             state.villages = villages;
             const bulidButton = $('.section1 > button.green');
             if (bulidButton.length) {
+                const villageChecksum = (_c = bulidButton.attr('onclick')) === null || _c === void 0 ? void 0 : _c.split('checksum=')[1].split("'")[0];
+                village.checksum = villageChecksum || '';
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 state.currentAction = CurrentActionEnum.IDLE;
                 village.pendingBuildTasks.splice(taskIdx, 1);
@@ -843,7 +847,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _d, _e;
     const params = new URLSearchParams(window.location.search);
     const villages = state.villages;
     const villageRequireEvade = Object.values(villages).filter(v => !!v.evadeTime).find(v => v.autoEvade && new Date(v.evadeTime) < new Date());
@@ -874,7 +878,7 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                         needSendTroop = true;
                     }
                 });
-                if (((_c = villageRequireEvade.evadeRaidPosition) === null || _c === void 0 ? void 0 : _c.x) && ((_d = villageRequireEvade.evadeRaidPosition) === null || _d === void 0 ? void 0 : _d.y)) {
+                if (((_d = villageRequireEvade.evadeRaidPosition) === null || _d === void 0 ? void 0 : _d.x) && ((_e = villageRequireEvade.evadeRaidPosition) === null || _e === void 0 ? void 0 : _e.y)) {
                     $("#xCoordInput").val(villageRequireEvade.evadeRaidPosition.x);
                     $("#yCoordInput").val(villageRequireEvade.evadeRaidPosition.y);
                 }
@@ -913,11 +917,11 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
+    var _f;
     const params = new URLSearchParams(window.location.search);
     const villages = state.villages;
     const village = villages[state.currentVillageId];
-    const customFarm = (_e = village.customFarms) === null || _e === void 0 ? void 0 : _e[idx];
+    const customFarm = (_f = village.customFarms) === null || _f === void 0 ? void 0 : _f[idx];
     if (customFarm) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
             yield Utils.delayClick(!state.feature.disableDelayClick);
@@ -1194,6 +1198,7 @@ const render = (state) => {
                 <div class="village-container">
                     <h4>${village.name} (id: ${id}) (${village.position.x}, ${village.position.y})</h4>
                     <br />
+                    <div>Checksum: ${village.checksum}</div>
                     <div>Last update: ${Utils.formatDate(village.lastUpdatedTime)}</div>
                     <div>Attack alert backoff: ${Utils.formatDate(village.attackAlertBackoff)}</div>
                     <div>Empty build queue alert backoff: ${Utils.formatDate(village.emptyBuildQueueAlertBackoff)}</div>
