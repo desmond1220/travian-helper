@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/23 18:07:44";
+const BUILD_TIME = "2022/12/23 18:23:29";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1061,7 +1061,8 @@ const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function* () {
     if ((new Date(state.nextFarmTime) < new Date() && !targetPrefix) || (new Date(state.nextFarmOasisTime) < new Date() && targetPrefix)) {
         const params = new URLSearchParams(window.location.search);
-        if (!(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
+        if ([CurrentActionEnum.FARM, CurrentActionEnum.OASIS_FARM].includes(state.currentAction) &&
+            !(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
             $('#sidebarBoxLinklist li').each((_, ele) => {
                 const name = $(ele).find('.name').text().trim();
                 const href = $(ele).find('a').attr('href');
