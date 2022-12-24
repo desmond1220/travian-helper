@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/24 11:46:42";
+const BUILD_TIME = "2022/12/24 11:56:22";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1109,7 +1109,7 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
                     if (lastRaidLost.length > 0) {
                         lastRaidLost.each((_, ele) => {
                             const row = $(ele).parent().parent().parent();
-                            const target = row.find('a').text().trim();
+                            const target = row.find('a').first().text().trim();
                             informFarmListInactivated(state, target);
                             row.find('input')[0].click();
                         });
