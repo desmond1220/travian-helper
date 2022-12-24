@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/24 10:50:57";
+const BUILD_TIME = "2022/12/24 11:46:42";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -868,6 +868,13 @@ const informTroopsEvaded = (state, village) => {
         fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Troops evaded at ${new Date()}`);
     }
 };
+const informFarmListInactivated = (state, target) => {
+    if (!state.telegramChatId || !state.telegramToken) {
+        state.feature.debug && console.log("Telegram chat id or token not set");
+        return;
+    }
+    fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Target: ${target} lost as attacker in the latest report, inactivated from farm list`);
+};
 const checkIncomingAttack = (state) => {
     var _c;
     const villages = state.villages;
@@ -1100,7 +1107,12 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
                     yield Utils.delayClick(!state.feature.disableDelayClick);
                     const lastRaidLost = $('td.lastRaid > div > img.iReport.iReport3').filter((_, ele) => $(ele).parent().parent().css('opacity') !== '0.4');
                     if (lastRaidLost.length > 0) {
-                        lastRaidLost.each((_, ele) => $(ele).parent().parent().parent().find('input')[0].click());
+                        lastRaidLost.each((_, ele) => {
+                            const row = $(ele).parent().parent().parent();
+                            const target = row.find('a').text().trim();
+                            informFarmListInactivated(state, target);
+                            row.find('input')[0].click();
+                        });
                         yield Utils.delayClick(!state.feature.disableDelayClick);
                         const deactivateButtons = yield Utils.waitForElement('button:contains("Deactivate selected")');
                         deactivateButtons.each((_, ele) => $(ele)[0].click());
