@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/24 10:47:57";
+const BUILD_TIME = "2022/12/24 10:50:57";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1061,13 +1061,13 @@ const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function* () {
     if ((new Date(state.nextFarmTime) < new Date() && !targetPrefix) || (new Date(state.nextFarmOasisTime) < new Date() && targetPrefix)) {
         const params = new URLSearchParams(window.location.search);
+        state.currentAction = !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM;
         if ([CurrentActionEnum.FARM, CurrentActionEnum.OASIS_FARM].includes(state.currentAction)) {
             let shortcut = undefined;
             $('#sidebarBoxLinklist li').each((_, ele) => {
                 const name = $(ele).find('.name').text().trim();
                 const href = $(ele).find('a').attr('href');
                 if (name === "Farm List") {
-                    state.currentAction = !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM;
                     shortcut = $(`a[href='${href}']`)[0];
                     return;
                 }
