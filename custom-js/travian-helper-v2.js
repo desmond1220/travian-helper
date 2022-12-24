@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/24 10:37:09";
+const BUILD_TIME = "2022/12/24 10:47:57";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1062,18 +1062,38 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
     if ((new Date(state.nextFarmTime) < new Date() && !targetPrefix) || (new Date(state.nextFarmOasisTime) < new Date() && targetPrefix)) {
         const params = new URLSearchParams(window.location.search);
         if ([CurrentActionEnum.FARM, CurrentActionEnum.OASIS_FARM].includes(state.currentAction)) {
+            let shortcut = undefined;
+            $('#sidebarBoxLinklist li').each((_, ele) => {
+                const name = $(ele).find('.name').text().trim();
+                const href = $(ele).find('a').attr('href');
+                if (name === "Farm List") {
+                    state.currentAction = !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM;
+                    shortcut = $(`a[href='${href}']`)[0];
+                    return;
+                }
+            });
             if (!(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
-                $('#sidebarBoxLinklist li').each((_, ele) => {
-                    const name = $(ele).find('.name').text().trim();
-                    const href = $(ele).find('a').attr('href');
-                    if (name === "Farm List") {
-                        state.currentAction = !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM;
-                        $(`a[href='${href}']`)[0].click();
+                if (shortcut) {
+                    state.currentAction = !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM;
+                    shortcut.click();
+                }
+                else {
+                    if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '99') {
+                        yield Utils.delayClick(!state.feature.disableDelayClick);
+                        $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
                         return;
                     }
-                });
+                    else if (state.currentPage === CurrentPageEnum.TOWN) {
+                        yield Navigation.goToBuilding(state, 39, 16, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM);
+                        return;
+                    }
+                    else {
+                        yield Navigation.goToTown(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM);
+                        return;
+                    }
+                }
             }
-            else {
+            if ((state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 const allStartButtons = yield Utils.waitForElement('.startButton[value=Start]');
                 if (state.feature.removeLostFromFarmList) {
@@ -1104,88 +1124,6 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
                 return;
             }
         }
-        // if (state.currentPage === CurrentPageEnum.REPORT) {
-        //     await Utils.delayClick(!state.feature.disableDelayClick)
-        //     $('a[href="/report/offensive"]')[0].click()
-        //     return
-        // } else if (state.currentPage === CurrentPageEnum.OFF_REPORT) {
-        //     const unreadReports = $("#overview > tbody").find(".messageStatusUnread")
-        //     const unreadOasisReports = unreadReports.filter((_, msg) => $(msg).parent().parent().find('div > a').text().includes("oasis"))
-        //     const unreadNonOasisReports = unreadReports.filter((_, msg) => !$(msg).parent().parent().find('div > a').text().includes("oasis"))
-        //     state.feature.debug && console.log("Unread report: " + unreadReports.length)
-        //     if (unreadOasisReports.length > 0) {
-        //         if (!state.feature.disableStopOnLoss) {
-        //             const feature = state.feature;
-        //             feature.autoFarmOasis = false;
-        //
-        //             state.feature = feature;
-        //         }
-        //         fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during oasis farm, please check the offensive report`)
-        //     }
-        //     if (unreadNonOasisReports.length > 0) {
-        //         if (!state.feature.disableStopOnLoss) {
-        //             const feature = state.feature;
-        //             feature.autoFarm = false;
-        //
-        //             state.feature = feature;
-        //         }
-        //         fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Losses occurred during farm, please check the offensive report`)
-        //     }
-        //     state.nextCheckReportTime = Utils.addToDate(new Date(), 0, 1, 0)
-        //     await Navigation.goToTown(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM)
-        //     return
-        // } else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
-        //
-        //     const allStartButtons = await Utils.waitForElement('.startButton[value=Start]')
-        //
-        //     if (state.feature.removeLostFromFarmList) {
-        //         await Utils.delayClick(!state.feature.disableDelayClick)
-        //         const lastRaidLost = $('td.lastRaid > div > img.iReport.iReport3').filter((_, ele) => $(ele).parent().parent().css('opacity') !== '0.4')
-        //
-        //         if (lastRaidLost.length > 0) {
-        //             lastRaidLost.each((_, ele) => $(ele).parent().parent().parent().find('input')[0].click())
-        //
-        //             await Utils.delayClick(!state.feature.disableDelayClick)
-        //             const deactivateButtons = await Utils.waitForElement('button:contains("Deactivate selected")')
-        //             deactivateButtons.each((_, ele) => $(ele)[0].click())
-        //         }
-        //     }
-        //
-        //     const allStartButtonsEle = allStartButtons.filter((_, button) => {
-        //         const text = $(button).parent().parent().find('.listName').find('span').text();
-        //         return text !== "Scout" && ((!targetPrefix && !text.startsWith("Oasis")) || (!!targetPrefix && text.startsWith(targetPrefix)))
-        //     })
-        //
-        //     for (let i = 0; i < allStartButtonsEle.length; i++) {
-        //         await Utils.delayClick(!state.feature.disableDelayClick)
-        //         allStartButtonsEle[i].click()
-        //     }
-        //     if (!targetPrefix) {
-        //         state.nextFarmTime = Utils.addToDate(new Date(), 0, Utils.randInt(state.farmIntervalMinutes.min, state.farmIntervalMinutes.max), Utils.randInt(0, 59))
-        //     } else if (targetPrefix === "Oasis") {
-        //         state.nextFarmOasisTime = Utils.addToDate(new Date(), 0, Utils.randInt(state.farmOasisIntervalMinutes.min, state.farmOasisIntervalMinutes.max), Utils.randInt(0, 30))
-        //     }
-        //     await Navigation.goToFields(state, CurrentActionEnum.IDLE);
-        //     return
-        // } else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '99') {
-        //     await Utils.delayClick(!state.feature.disableDelayClick)
-        //     $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click()
-        //     return
-        // } else if (state.currentPage === CurrentPageEnum.TOWN) {
-        //     if (new Date(state.nextCheckReportTime) < new Date() && !state.feature.disableReportChecking) {
-        //         await Navigation.goToReport(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM)
-        //     } else {
-        //         await Navigation.goToBuilding(state, 39, 16, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM)
-        //     }
-        //     return
-        // } else {
-        //     if (new Date(state.nextCheckReportTime) < new Date() && !state.feature.disableReportChecking) {
-        //         await Navigation.goToReport(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM)
-        //     } else {
-        //         await Navigation.goToTown(state, !targetPrefix ? CurrentActionEnum.FARM : CurrentActionEnum.OASIS_FARM)
-        //     }
-        //     return
-        // }
     }
 });
 const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* () {
@@ -1496,8 +1434,6 @@ const render = (state) => {
             <input id="toggleAutoScout" class="ml-5" type="checkbox" ${state.feature.autoScout ? 'checked' : ''}/> Auto scout
             <input id="toggleAutoFarm" class="ml-5" type="checkbox" ${state.feature.autoFarm ? 'checked' : ''}/> Auto farm
             <input id="toggleAutoFarmOasis" class="ml-5" type="checkbox" ${state.feature.autoFarmOasis ? 'checked' : ''}/> Auto farm oasis
-            <input id="toggleDisableReportChecking" class="ml-5" type="checkbox" ${state.feature.disableReportChecking ? 'checked' : ''}/> Disable report checking
-            <input id="toggleDisableStopOnLoss" class="ml-5" type="checkbox" ${state.feature.disableStopOnLoss ? 'checked' : ''}/> Disable stop on loss
             <input id="toggleAutoCustomFarm" class="ml-5" type="checkbox" ${state.feature.autoCustomFarm ? 'checked' : ''}/> Auto custom farm
             <input id="toggleAlertAttack" class="ml-5" type="checkbox" ${state.feature.alertAttack ? 'checked' : ''}/> Alert attack
             <input id="toggleAlertEmptyBuildQueue" class="ml-5" type="checkbox" ${state.feature.alertEmptyBuildQueue ? 'checked' : ''}/> Alert empty build queue
@@ -1781,8 +1717,6 @@ const render = (state) => {
     handleFeatureToggle('#toggleAutoScout', state, 'autoScout');
     handleFeatureToggle('#toggleAutoFarm', state, 'autoFarm');
     handleFeatureToggle('#toggleAutoFarmOasis', state, 'autoFarmOasis');
-    handleFeatureToggle('#toggleDisableReportChecking', state, 'disableReportChecking');
-    handleFeatureToggle('#toggleDisableStopOnLoss', state, 'disableStopOnLoss');
     handleFeatureToggle('#toggleAutoCustomFarm', state, 'autoCustomFarm');
     handleFeatureToggle('#toggleAlertAttack', state, 'alertAttack');
     handleFeatureToggle('#toggleAlertEmptyBuildQueue', state, 'alertEmptyBuildQueue');
