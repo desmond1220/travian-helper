@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 13:49:12";
+const BUILD_TIME = "2022/12/25 13:56:58";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -927,12 +927,16 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 return;
             }
         }
-        else if (state.currentPage === CurrentPageEnum.BUILDING
-            && !gid) {
+        else if (state.currentPage === CurrentPageEnum.BUILDING && !gid) {
             const checksum = village.checksum;
             if (checksum) {
+                village.pendingBuildTasks.splice(taskIdx, 1);
+                yield Utils.delayClick(!state.feature.disableDelayClick);
+                state.currentAction = CurrentActionEnum.IDLE;
+                state.villages = villages;
                 window.location.href = `/dorf2.php?id=${task.aid}&gid=${task.gid}&action=build&checksum=${checksum}`;
             }
+            return;
         }
     }
     // Check if need to build in another village
