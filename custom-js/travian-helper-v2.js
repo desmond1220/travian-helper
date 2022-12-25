@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 13:56:58";
+const BUILD_TIME = "2022/12/25 14:04:00";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -476,7 +476,13 @@ Navigation.goToBuilding = (state, aid, gid, action) => __awaiter(void 0, void 0,
         state.currentAction = action;
         state.feature.debug && console.log(`Go to building - [aid=${aid},gid=${gid}]${GID_NAME_MAP[gid]}`);
         if (aid === 40) { // Special case for wall
-            $('#villageContent > div.buildingSlot.a40.top > svg > g.hoverShape > path').trigger('click');
+            const wall = $('#villageContent > div.buildingSlot.a40.top > svg > g.hoverShape > path');
+            if (wall.length > 0) {
+                wall.trigger('click');
+            }
+            else {
+                window.location.href = `/build.php?id=${aid}`;
+            }
         }
         else {
             window.location.href = `/build.php?id=${aid}`;
