@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 14:48:03";
+const BUILD_TIME = "2022/12/25 16:26:15";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -279,7 +279,18 @@ const NEW_ACCOUNT_LIST = [
     { aid: 31, gid: 25, resources: { lumber: 2550, clay: 2025, iron: 1540, crop: 790 } },
     { aid: 31, gid: 25, resources: { lumber: 3265, clay: 2590, iron: 1970, crop: 1015 } },
     { aid: 31, gid: 25, resources: { lumber: 4180, clay: 3315, iron: 2520, crop: 1295 } },
-    { aid: 31, gid: 25, resources: { lumber: 5350, clay: 4245, iron: 3230, crop: 1660 } }
+    { aid: 31, gid: 25, resources: { lumber: 5350, clay: 4245, iron: 3230, crop: 1660 } },
+    //Lv10 Cranny
+    { aid: 23, gid: 23, resources: { lumber: 225, clay: 280, iron: 170, crop: 55 } },
+    { aid: 23, gid: 23, resources: { lumber: 290, clay: 360, iron: 215, crop: 70 } },
+    { aid: 23, gid: 23, resources: { lumber: 370, clay: 460, iron: 275, crop: 90 } },
+    //Lv1 Cranny
+    { aid: 19, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    { aid: 20, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    { aid: 21, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    { aid: 22, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    { aid: 24, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    { aid: 28, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
 ];
 var CurrentPageEnum;
 (function (CurrentPageEnum) {
