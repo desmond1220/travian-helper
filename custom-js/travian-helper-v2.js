@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 14:15:12";
+const BUILD_TIME = "2022/12/25 14:20:34";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -941,7 +941,7 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 state.villages = villages;
                 yield Utils.delayClick(true);
                 if (task.aid === 40) { // Special case for wall
-                    $('.contractLink button').trigger('click');
+                    $('.contractLink button')[0].click();
                 }
                 else {
                     window.location.href = `/dorf2.php?id=${task.aid}&gid=${task.gid}&action=build&checksum=${checksum}`;
