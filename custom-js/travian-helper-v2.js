@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 16:36:01";
+const BUILD_TIME = "2022/12/25 16:54:30";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -438,26 +438,21 @@ Utils.groupByAndSum = (records) => {
     return records.reduce((res, value) => Utils.sumRecord(res, value), {});
 };
 Utils.waitForElement = (selector, timeout = 5000) => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if ($(selector) && $(selector).length > 0) {
             return resolve($(selector));
         }
-        const timeoutCallback = setTimeout(() => {
-            observer.disconnect();
-            Promise.reject();
-        }, timeout);
-        const onDomChange = (mutations, observer) => {
+        const observer = new MutationObserver((mutations, observer) => {
             if ($(selector) && $(selector).length > 0) {
-                console.log("Found");
                 resolve($(selector));
                 clearTimeout(timeoutCallback);
                 observer.disconnect();
             }
-            else {
-                console.log("Checking");
-            }
-        };
-        const observer = new MutationObserver(onDomChange);
+        });
+        const timeoutCallback = setTimeout(() => {
+            observer.disconnect();
+            reject();
+        }, timeout);
         observer.observe(document.body, {
             childList: true,
             subtree: true
@@ -1766,8 +1761,11 @@ const run = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const initialize = () => {
     const handler = new StateHandler();
     const state = new Proxy(StateHandler.INITIAL_STATE, handler);
-    if ($('a.progressiveTasksTitle').length === 0) {
-        location.reload();
+    if (window.location.pathname !== "/") {
+        const taskTitle = Utils.waitForElement('a.progressiveTasksTitle').catch(err => location.reload());
+    }
+    else {
+        const logo = Utils.waitForElement('#logo').catch(err => location.reload());
     }
     handler.setCallback(() => render(state));
     createStyle();
