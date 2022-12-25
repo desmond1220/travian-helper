@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 14:08:27";
+const BUILD_TIME = "2022/12/25 14:15:12";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -150,7 +150,7 @@ const NEW_ACCOUNT_LIST = [
     { aid: 26, gid: 15, resources: { lumber: 90, clay: 50, iron: 75, crop: 25 } },
     { aid: 26, gid: 15, resources: { lumber: 115, clay: 65, iron: 100, crop: 25 } },
     //Lv1 Wall
-    { aid: 40, gid: 31, resources: { lumber: 50, clay: 80, iron: 40, crop: 30 } },
+    { aid: 40, gid: 43, resources: { lumber: 50, clay: 80, iron: 40, crop: 30 } },
     //Lv3 Marketplace
     { aid: 27, gid: 17, resources: { lumber: 80, clay: 70, iron: 120, crop: 70 } },
     { aid: 27, gid: 17, resources: { lumber: 100, clay: 90, iron: 155, crop: 90 } },
@@ -940,7 +940,12 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 state.currentAction = CurrentActionEnum.IDLE;
                 state.villages = villages;
                 yield Utils.delayClick(true);
-                window.location.href = `/dorf2.php?id=${task.aid}&gid=${task.gid}&action=build&checksum=${checksum}`;
+                if (task.aid === 40) { // Special case for wall
+                    $('.contractLink button').trigger('click');
+                }
+                else {
+                    window.location.href = `/dorf2.php?id=${task.aid}&gid=${task.gid}&action=build&checksum=${checksum}`;
+                }
             }
             return;
         }
