@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/24 11:56:22";
+const BUILD_TIME = "2022/12/25 13:43:46";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -60,306 +60,226 @@ const GID_NAME_MAP = {
     "46": "Hospital"
 };
 const NEW_VILLAGE_LIST = [
-    // {
-    //     aid: 26,
-    //     gid: 15,
-    //     resources: {
-    //         lumber: 70,
-    //         clay: 40,
-    //         iron: 60,
-    //         crop: 20
-    //     }
-    // },
-    {
-        aid: 39,
-        gid: 16,
-        resources: {
-            lumber: 110,
-            clay: 160,
-            iron: 90,
-            crop: 70
-        }
-    },
-    {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 90,
-            clay: 50,
-            iron: 75,
-            crop: 25
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 115,
-            clay: 65,
-            iron: 100,
-            crop: 25
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 145,
-            clay: 85,
-            iron: 125,
-            crop: 40
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 190,
-            clay: 105,
-            iron: 160,
-            crop: 55
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 130,
-            clay: 160,
-            iron: 90,
-            crop: 40
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 165,
-            clay: 205,
-            iron: 115,
-            crop: 50
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 215,
-            clay: 260,
-            iron: 145,
-            crop: 65
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 80,
-            clay: 100,
-            iron: 70,
-            crop: 20
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 100,
-            clay: 130,
-            iron: 90,
-            crop: 25
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 275,
-            clay: 335,
-            iron: 190,
-            crop: 85
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 350,
-            clay: 430,
-            iron: 240,
-            crop: 105
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 445,
-            clay: 550,
-            iron: 310,
-            crop: 135
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 130,
-            clay: 165,
-            iron: 115,
-            crop: 35
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 170,
-            clay: 210,
-            iron: 145,
-            crop: 40
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 240,
-            clay: 135,
-            iron: 205,
-            crop: 70
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 310,
-            clay: 175,
-            iron: 265,
-            crop: 90
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 395,
-            clay: 225,
-            iron: 340,
-            crop: 115
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 505,
-            clay: 290,
-            iron: 430,
-            crop: 145
-        }
-    }, {
-        aid: 26,
-        gid: 15,
-        resources: {
-            lumber: 645,
-            clay: 370,
-            iron: 555,
-            crop: 185
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 570,
-            clay: 705,
-            iron: 375,
-            crop: 175
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 730,
-            clay: 900,
-            iron: 505,
-            crop: 225
-        }
-    }, {
-        aid: 33,
-        gid: 10,
-        resources: {
-            lumber: 935,
-            clay: 1155,
-            iron: 650,
-            crop: 290
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 215,
-            clay: 270,
-            iron: 190,
-            crop: 55
-        }
-    }, {
-        aid: 25,
-        gid: 11,
-        resources: {
-            lumber: 275,
-            clay: 345,
-            iron: 240,
-            crop: 70
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 80,
-            clay: 70,
-            iron: 120,
-            crop: 70
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 100,
-            clay: 90,
-            iron: 155,
-            crop: 90
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 130,
-            clay: 115,
-            iron: 195,
-            crop: 115
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 170,
-            clay: 145,
-            iron: 250,
-            crop: 145
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 215,
-            clay: 190,
-            iron: 320,
-            crop: 190
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 275,
-            clay: 240,
-            iron: 410,
-            crop: 240
-        }
-    }, {
-        aid: 27,
-        gid: 17,
-        resources: {
-            lumber: 350,
-            clay: 310,
-            iron: 530,
-            crop: 310
-        }
-    },
+    //Lv1 Rally point
+    { aid: 39, gid: 16, resources: { lumber: 110, clay: 160, iron: 90, crop: 70 } },
+    //Lv5 Main building
+    { aid: 26, gid: 15, resources: { lumber: 90, clay: 50, iron: 75, crop: 25 } },
+    { aid: 26, gid: 15, resources: { lumber: 115, clay: 65, iron: 100, crop: 25 } },
+    { aid: 26, gid: 15, resources: { lumber: 145, clay: 85, iron: 125, crop: 40 } },
+    { aid: 26, gid: 15, resources: { lumber: 190, clay: 105, iron: 160, crop: 55 } },
+    //Lv3 Wareshouse
+    { aid: 33, gid: 10, resources: { lumber: 130, clay: 160, iron: 90, crop: 40 } },
+    { aid: 33, gid: 10, resources: { lumber: 165, clay: 205, iron: 115, crop: 50 } },
+    { aid: 33, gid: 10, resources: { lumber: 215, clay: 260, iron: 145, crop: 65 } },
+    //Lv2 Granary
+    { aid: 25, gid: 11, resources: { lumber: 80, clay: 100, iron: 70, crop: 20 } },
+    { aid: 25, gid: 11, resources: { lumber: 100, clay: 130, iron: 90, crop: 25 } },
+    //Lv10 Main building
+    { aid: 26, gid: 15, resources: { lumber: 240, clay: 135, iron: 205, crop: 70 } },
+    { aid: 26, gid: 15, resources: { lumber: 310, clay: 175, iron: 265, crop: 90 } },
+    { aid: 26, gid: 15, resources: { lumber: 395, clay: 225, iron: 340, crop: 115 } },
+    { aid: 26, gid: 15, resources: { lumber: 505, clay: 290, iron: 430, crop: 145 } },
+    { aid: 26, gid: 15, resources: { lumber: 645, clay: 370, iron: 555, crop: 185 } },
+    //Lv6 Wareshouse
+    { aid: 33, gid: 10, resources: { lumber: 275, clay: 335, iron: 190, crop: 85 } },
+    { aid: 33, gid: 10, resources: { lumber: 350, clay: 430, iron: 240, crop: 105 } },
+    { aid: 33, gid: 10, resources: { lumber: 445, clay: 550, iron: 310, crop: 135 } },
+    //Lv4 Granary
+    { aid: 25, gid: 11, resources: { lumber: 130, clay: 165, iron: 115, crop: 35 } },
+    { aid: 25, gid: 11, resources: { lumber: 170, clay: 210, iron: 145, crop: 40 } },
+    //Lv9 Wareshouse
+    { aid: 33, gid: 10, resources: { lumber: 570, clay: 705, iron: 375, crop: 175 } },
+    { aid: 33, gid: 10, resources: { lumber: 730, clay: 900, iron: 505, crop: 225 } },
+    { aid: 33, gid: 10, resources: { lumber: 935, clay: 1155, iron: 650, crop: 290 } },
+    //Lv6 Granary
+    { aid: 25, gid: 11, resources: { lumber: 215, clay: 270, iron: 190, crop: 55 } },
+    { aid: 25, gid: 11, resources: { lumber: 275, clay: 345, iron: 240, crop: 70 } },
+    //Lv7 Market
+    { aid: 27, gid: 17, resources: { lumber: 80, clay: 70, iron: 120, crop: 70 } },
+    { aid: 27, gid: 17, resources: { lumber: 100, clay: 90, iron: 155, crop: 90 } },
+    { aid: 27, gid: 17, resources: { lumber: 130, clay: 115, iron: 195, crop: 115 } },
+    { aid: 27, gid: 17, resources: { lumber: 170, clay: 145, iron: 250, crop: 145 } },
+    { aid: 27, gid: 17, resources: { lumber: 215, clay: 190, iron: 320, crop: 190 } },
+    { aid: 27, gid: 17, resources: { lumber: 275, clay: 240, iron: 410, crop: 240 } },
+    { aid: 27, gid: 17, resources: { lumber: 350, clay: 310, iron: 530, crop: 310 } },
+    //Lv12 Wareshouse
+    { aid: 33, gid: 10, resources: { lumber: 1200, clay: 1475, iron: 830, crop: 370 } },
+    { aid: 33, gid: 10, resources: { lumber: 1535, clay: 1890, iron: 1065, crop: 470 } },
+    { aid: 33, gid: 10, resources: { lumber: 1965, clay: 2420, iron: 1360, crop: 705 } },
+    //Lv8 Granary
+    { aid: 25, gid: 11, resources: { lumber: 350, clay: 440, iron: 310, crop: 90 } },
+    { aid: 25, gid: 11, resources: { lumber: 450, clay: 565, iron: 395, crop: 115 } },
+    //Lv10 Residence
+    { aid: 31, gid: 25, resources: { lumber: 590, clay: 460, iron: 350, crop: 180 } },
+    { aid: 31, gid: 25, resources: { lumber: 740, clay: 590, iron: 450, crop: 230 } },
+    { aid: 31, gid: 25, resources: { lumber: 950, clay: 755, iron: 575, crop: 295 } },
+    { aid: 31, gid: 25, resources: { lumber: 1215, clay: 965, iron: 735, crop: 375 } },
+    { aid: 31, gid: 25, resources: { lumber: 1555, clay: 1235, iron: 940, crop: 485 } },
+    { aid: 31, gid: 25, resources: { lumber: 1995, clay: 1580, iron: 1205, crop: 620 } },
+    { aid: 31, gid: 25, resources: { lumber: 2550, clay: 2025, iron: 1540, crop: 790 } },
+    { aid: 31, gid: 25, resources: { lumber: 3265, clay: 2590, iron: 1970, crop: 1015 } },
+    { aid: 31, gid: 25, resources: { lumber: 4180, clay: 3315, iron: 2520, crop: 1295 } },
+    { aid: 31, gid: 25, resources: { lumber: 5350, clay: 4245, iron: 3230, crop: 1660 } },
+    //Lv10 Hero's mansion
+    { aid: 30, gid: 37, resources: { lumber: 700, clay: 670, iron: 700, crop: 240 } },
+    { aid: 30, gid: 37, resources: { lumber: 930, clay: 890, iron: 930, crop: 320 } },
+    { aid: 30, gid: 37, resources: { lumber: 1240, clay: 1185, iron: 1240, crop: 425 } },
+    { aid: 30, gid: 37, resources: { lumber: 1645, clay: 1575, iron: 1645, crop: 565 } },
+    { aid: 30, gid: 37, resources: { lumber: 2190, clay: 2095, iron: 2190, crop: 750 } },
+    { aid: 30, gid: 37, resources: { lumber: 2915, clay: 2790, iron: 2915, crop: 1000 } },
+    { aid: 30, gid: 37, resources: { lumber: 3875, clay: 3710, iron: 3875, crop: 1330 } },
+    { aid: 30, gid: 37, resources: { lumber: 5155, clay: 4930, iron: 5155, crop: 1765 } },
+    { aid: 30, gid: 37, resources: { lumber: 6855, clay: 6560, iron: 6855, crop: 2350 } },
+    { aid: 30, gid: 37, resources: { lumber: 9115, clay: 8725, iron: 9115, crop: 3125 } },
+];
+const NEW_ACCOUNT_LIST = [
+    //Lv2 Clay
+    { aid: 5, gid: 2, resources: { lumber: 135, clay: 65, iron: 135, crop: 85 } },
+    //Lv2 Iron
+    { aid: 4, gid: 3, resources: { lumber: 100, clay: 80, iron: 30, crop: 60 } },
+    { aid: 4, gid: 3, resources: { lumber: 165, clay: 135, iron: 50, crop: 100 } },
+    //Lv1 Warehouse
+    { aid: 33, gid: 10, resources: { lumber: 130, clay: 160, iron: 90, crop: 40 } },
+    //Lv1 Granary
+    { aid: 25, gid: 11, resources: { lumber: 80, clay: 100, iron: 70, crop: 20 } },
+    //Lv1 Cranny
+    { aid: 23, gid: 23, resources: { lumber: 40, clay: 50, iron: 30, crop: 10 } },
+    //Lv1 Embassy
+    { aid: 30, gid: 18, resources: { lumber: 180, clay: 130, iron: 150, crop: 80 } },
+    //Lv3 Main Building
+    { aid: 26, gid: 15, resources: { lumber: 90, clay: 50, iron: 75, crop: 25 } },
+    { aid: 26, gid: 15, resources: { lumber: 115, clay: 65, iron: 100, crop: 25 } },
+    //Lv1 Wall
+    { aid: 40, gid: 31, resources: { lumber: 50, clay: 80, iron: 40, crop: 30 } },
+    //Lv3 Marketplace
+    { aid: 27, gid: 17, resources: { lumber: 80, clay: 70, iron: 120, crop: 70 } },
+    { aid: 27, gid: 17, resources: { lumber: 100, clay: 90, iron: 155, crop: 90 } },
+    { aid: 27, gid: 17, resources: { lumber: 130, clay: 115, iron: 195, crop: 115 } },
+    //Lv3 Wall
+    { aid: 40, gid: 43, resources: { lumber: 65, clay: 105, iron: 50, crop: 40 } },
+    { aid: 40, gid: 43, resources: { lumber: 80, clay: 130, iron: 65, crop: 50 } },
+    //Lv1 Clay x3
+    { aid: 6, gid: 2, resources: { lumber: 80, clay: 40, iron: 80, crop: 50 } },
+    { aid: 16, gid: 2, resources: { lumber: 80, clay: 40, iron: 80, crop: 50 } },
+    { aid: 18, gid: 2, resources: { lumber: 80, clay: 40, iron: 80, crop: 50 } },
+    //Lv2 Clay x3
+    { aid: 6, gid: 2, resources: { lumber: 135, clay: 65, iron: 135, crop: 85 } },
+    { aid: 16, gid: 2, resources: { lumber: 135, clay: 65, iron: 135, crop: 85 } },
+    { aid: 18, gid: 2, resources: { lumber: 135, clay: 65, iron: 135, crop: 85 } },
+    //Lv1 Wood x3
+    { aid: 3, gid: 1, resources: { lumber: 40, clay: 100, iron: 50, crop: 60 } },
+    { aid: 14, gid: 1, resources: { lumber: 40, clay: 100, iron: 50, crop: 60 } },
+    { aid: 17, gid: 1, resources: { lumber: 40, clay: 100, iron: 50, crop: 60 } },
+    //Lv2 Wood x3
+    { aid: 3, gid: 1, resources: { lumber: 65, clay: 165, iron: 85, crop: 100 } },
+    { aid: 14, gid: 1, resources: { lumber: 65, clay: 165, iron: 85, crop: 100 } },
+    { aid: 17, gid: 1, resources: { lumber: 65, clay: 165, iron: 85, crop: 100 } },
+    //Lv1 Icon x3
+    { aid: 7, gid: 3, resources: { lumber: 100, clay: 80, iron: 30, crop: 60 } },
+    { aid: 10, gid: 3, resources: { lumber: 100, clay: 80, iron: 30, crop: 60 } },
+    { aid: 11, gid: 3, resources: { lumber: 100, clay: 80, iron: 30, crop: 60 } },
+    //Lv2 Icon x3
+    { aid: 7, gid: 3, resources: { lumber: 165, clay: 135, iron: 50, crop: 100 } },
+    { aid: 10, gid: 3, resources: { lumber: 165, clay: 135, iron: 50, crop: 100 } },
+    { aid: 11, gid: 3, resources: { lumber: 165, clay: 135, iron: 50, crop: 100 } },
+    //Lv1 Crop x5
+    { aid: 8, gid: 4, resources: { lumber: 70, clay: 90, iron: 70, crop: 20 } },
+    { aid: 9, gid: 4, resources: { lumber: 70, clay: 90, iron: 70, crop: 20 } },
+    { aid: 12, gid: 4, resources: { lumber: 70, clay: 90, iron: 70, crop: 20 } },
+    { aid: 13, gid: 4, resources: { lumber: 70, clay: 90, iron: 70, crop: 20 } },
+    { aid: 15, gid: 4, resources: { lumber: 70, clay: 90, iron: 70, crop: 20 } },
+    //Lv2 Crop x5
+    { aid: 8, gid: 4, resources: { lumber: 115, clay: 150, iron: 115, crop: 35 } },
+    { aid: 9, gid: 4, resources: { lumber: 115, clay: 150, iron: 115, crop: 35 } },
+    { aid: 12, gid: 4, resources: { lumber: 115, clay: 150, iron: 115, crop: 35 } },
+    { aid: 13, gid: 4, resources: { lumber: 115, clay: 150, iron: 115, crop: 35 } },
+    { aid: 15, gid: 4, resources: { lumber: 115, clay: 150, iron: 115, crop: 35 } },
+    //Lv4 Wood
+    { aid: 1, gid: 1, resources: { lumber: 110, clay: 280, iron: 140, crop: 165 } },
+    { aid: 1, gid: 1, resources: { lumber: 185, clay: 465, iron: 235, crop: 280 } },
+    //lv4 Clay
+    { aid: 5, gid: 2, resources: { lumber: 225, clay: 110, iron: 225, crop: 140 } },
+    { aid: 5, gid: 2, resources: { lumber: 375, clay: 185, iron: 375, crop: 235 } },
+    //Lv4 Iron
+    { aid: 4, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
+    { aid: 4, gid: 3, resources: { lumber: 465, clay: 375, iron: 140, crop: 280 } },
+    //Lv4 Crop
+    { aid: 2, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
+    { aid: 2, gid: 4, resources: { lumber: 325, clay: 420, iron: 325, crop: 95 } },
+    //Lv1 Barracks
+    { aid: 32, gid: 19, resources: { lumber: 210, clay: 140, iron: 260, crop: 120 } },
+    //Lv3 Warehouse
+    { aid: 33, gid: 10, resources: { lumber: 165, clay: 205, iron: 115, crop: 50 } },
+    { aid: 33, gid: 10, resources: { lumber: 215, clay: 260, iron: 145, crop: 65 } },
+    //Lv3 Granary
+    { aid: 25, gid: 11, resources: { lumber: 100, clay: 130, iron: 90, crop: 25 } },
+    { aid: 25, gid: 11, resources: { lumber: 130, clay: 165, iron: 115, crop: 35 } },
+    //Lv7 Main Building
+    { aid: 26, gid: 15, resources: { lumber: 145, clay: 85, iron: 125, crop: 40 } },
+    { aid: 26, gid: 15, resources: { lumber: 190, clay: 105, iron: 160, crop: 55 } },
+    { aid: 26, gid: 15, resources: { lumber: 240, clay: 135, iron: 205, crop: 70 } },
+    { aid: 26, gid: 15, resources: { lumber: 310, clay: 175, iron: 265, crop: 90 } },
+    //Lv3 Clay x3
+    { aid: 6, gid: 2, resources: { lumber: 225, clay: 110, iron: 225, crop: 140 } },
+    { aid: 16, gid: 2, resources: { lumber: 225, clay: 110, iron: 225, crop: 140 } },
+    { aid: 18, gid: 2, resources: { lumber: 225, clay: 110, iron: 225, crop: 140 } },
+    //Lv3 Wood x3
+    { aid: 3, gid: 1, resources: { lumber: 110, clay: 280, iron: 140, crop: 165 } },
+    { aid: 14, gid: 1, resources: { lumber: 110, clay: 280, iron: 140, crop: 165 } },
+    { aid: 17, gid: 1, resources: { lumber: 110, clay: 280, iron: 140, crop: 165 } },
+    //Lv3 Iron x3
+    { aid: 7, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
+    { aid: 10, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
+    { aid: 11, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
+    //Lv3 Barracks
+    { aid: 32, gid: 19, resources: { lumber: 270, clay: 180, iron: 335, crop: 155 } },
+    { aid: 32, gid: 19, resources: { lumber: 345, clay: 230, iron: 425, crop: 195 } },
+    //Lv7 Cranny
+    { aid: 23, gid: 23, resources: { lumber: 50, clay: 65, iron: 40, crop: 15 } },
+    { aid: 23, gid: 23, resources: { lumber: 65, clay: 80, iron: 50, crop: 15 } },
+    { aid: 23, gid: 23, resources: { lumber: 85, clay: 105, iron: 65, crop: 20 } },
+    { aid: 23, gid: 23, resources: { lumber: 105, clay: 135, iron: 80, crop: 25 } },
+    { aid: 23, gid: 23, resources: { lumber: 135, clay: 170, iron: 105, crop: 35 } },
+    { aid: 23, gid: 23, resources: { lumber: 175, clay: 220, iron: 130, crop: 45 } },
+    //Lv1 Residence
+    { aid: 31, gid: 25, resources: { lumber: 580, clay: 460, iron: 350, crop: 180 } },
+    //Lv7 Marketplace
+    { aid: 27, gid: 17, resources: { lumber: 170, clay: 145, iron: 250, crop: 145 } },
+    { aid: 27, gid: 17, resources: { lumber: 215, clay: 190, iron: 320, crop: 190 } },
+    { aid: 27, gid: 17, resources: { lumber: 275, clay: 240, iron: 410, crop: 240 } },
+    { aid: 27, gid: 17, resources: { lumber: 350, clay: 310, iron: 530, crop: 310 } },
+    //Lv1 Academy
+    { aid: 35, gid: 22, resources: { lumber: 220, clay: 160, iron: 90, crop: 40 } },
+    //Lv1 Smithy
+    { aid: 38, gid: 13, resources: { lumber: 180, clay: 250, iron: 500, crop: 160 } },
+    //Lv10 Academy
+    { aid: 35, gid: 22, resources: { lumber: 280, clay: 205, iron: 115, crop: 50 } },
+    { aid: 35, gid: 22, resources: { lumber: 360, clay: 260, iron: 145, crop: 65 } },
+    { aid: 35, gid: 22, resources: { lumber: 460, clay: 335, iron: 190, crop: 85 } },
+    { aid: 35, gid: 22, resources: { lumber: 590, clay: 430, iron: 240, crop: 105 } },
+    { aid: 35, gid: 22, resources: { lumber: 755, clay: 550, iron: 310, crop: 135 } },
+    { aid: 35, gid: 22, resources: { lumber: 970, clay: 705, iron: 395, crop: 175 } },
+    { aid: 35, gid: 22, resources: { lumber: 1240, clay: 900, iron: 505, crop: 225 } },
+    { aid: 35, gid: 22, resources: { lumber: 1585, clay: 1155, iron: 650, crop: 290 } },
+    { aid: 35, gid: 22, resources: { lumber: 2030, clay: 1475, iron: 830, crop: 370 } },
+    //Lv1 Workshop
+    { aid: 37, gid: 21, resources: { lumber: 460, clay: 510, iron: 600, crop: 320 } },
+    //Lv10 Main Building
+    { aid: 26, gid: 15, resources: { lumber: 395, clay: 225, iron: 340, crop: 115 } },
+    { aid: 26, gid: 15, resources: { lumber: 505, clay: 290, iron: 430, crop: 145 } },
+    { aid: 26, gid: 15, resources: { lumber: 645, clay: 370, iron: 555, crop: 185 } },
+    //Lv1 Townhall
+    { aid: 29, gid: 24, resources: { lumber: 1250, clay: 1110, iron: 1260, crop: 600 } },
+    //Lv10 Residence
+    { aid: 31, gid: 25, resources: { lumber: 740, clay: 950, iron: 450, crop: 230 } },
+    { aid: 31, gid: 25, resources: { lumber: 950, clay: 755, iron: 575, crop: 295 } },
+    { aid: 31, gid: 25, resources: { lumber: 1215, clay: 965, iron: 735, crop: 375 } },
+    { aid: 31, gid: 25, resources: { lumber: 1555, clay: 1235, iron: 940, crop: 485 } },
+    { aid: 31, gid: 25, resources: { lumber: 1995, clay: 1580, iron: 1205, crop: 620 } },
+    { aid: 31, gid: 25, resources: { lumber: 2550, clay: 2025, iron: 1540, crop: 790 } },
+    { aid: 31, gid: 25, resources: { lumber: 3265, clay: 2590, iron: 1970, crop: 1015 } },
+    { aid: 31, gid: 25, resources: { lumber: 4180, clay: 3315, iron: 2520, crop: 1295 } },
+    { aid: 31, gid: 25, resources: { lumber: 5350, clay: 4245, iron: 3230, crop: 1660 } }
 ];
 var CurrentPageEnum;
 (function (CurrentPageEnum) {
@@ -712,31 +632,24 @@ const updateVillageList = (state) => {
         const villageDefaults = {
             id: '',
             name: '',
-            position: { x: 0, y: 0 },
-            checksum: '',
-            index: -1,
-            currentBuildTasks: [],
-            pendingBuildTasks: [],
-            incomingTroops: [],
+            position: { x: 0, y: 0 }, checksum: '', index: -1, currentBuildTasks: [],
+            pendingBuildTasks: [], incomingTroops: [],
             outgoingTroops: [],
             resources: {
                 lumber: 0,
                 clay: 0,
                 iron: 0,
                 crop: 0
-            },
-            capacity: {
+            }, capacity: {
                 lumber: 0,
                 clay: 0,
                 iron: 0,
                 crop: 0
             },
-            autoEvade: false,
-            customFarms: []
+            autoEvade: false, customFarms: []
         };
         villages[id] = Object.assign(Object.assign(Object.assign({}, villageDefaults), villages[id]), { id,
-            name,
-            index, position: { x, y } });
+            name, index, position: { x, y } });
     });
     state.villages = Object.fromEntries(Object.entries(villages).filter(([id, _]) => villiageIds.includes(id)));
     if (currentVillageId)
@@ -1386,10 +1299,7 @@ const render = (state) => {
     }
     if ([CurrentPageEnum.REPORT, CurrentPageEnum.OFF_REPORT, CurrentPageEnum.SCOUT_REPORT].includes(state.currentPage)) {
         const resourcesFromReport = {
-            lumber: 0,
-            clay: 0,
-            iron: 0,
-            crop: 0
+            lumber: 0, clay: 0, iron: 0, crop: 0
         };
         resourcesFromReport.lumber = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[0]).text());
         resourcesFromReport.clay = Utils.parseIntIgnoreNonNumeric($($('.resources').find('span.value')[1]).text());
@@ -1450,7 +1360,6 @@ const render = (state) => {
             <input id="toggleAlertAttack" class="ml-5" type="checkbox" ${state.feature.alertAttack ? 'checked' : ''}/> Alert attack
             <input id="toggleAlertEmptyBuildQueue" class="ml-5" type="checkbox" ${state.feature.alertEmptyBuildQueue ? 'checked' : ''}/> Alert empty build queue
             <input id="toggleAlertResourceCapacityFull" class="ml-5" type="checkbox" ${state.feature.alertResourceCapacityFull ? 'checked' : ''}/> Alert resource capacity full
-            <input id="toggleDisableDelayClick" class="ml-5" type="checkbox" ${state.feature.disableDelayClick ? 'checked' : ''}/> Disable Delay Click
             <input id="toggleRemoveLostFromFarmList" class="ml-5" type="checkbox" ${state.feature.removeLostFromFarmList ? 'checked' : ''}> Remove Lost From Farm List
             <input id="toggleRandomAction" class="ml-5" type="checkbox" ${state.feature.randomAction ? 'checked' : ''}/> Random Action
             <input id="toggleDebug" class="ml-5" type="checkbox" ${state.feature.debug ? 'checked' : ''}/> Debug
@@ -1480,6 +1389,7 @@ const render = (state) => {
             <h4>Action</h4>
             ${state.currentPage === CurrentPageEnum.FIELDS ? '<button id="addAllFields">Add all fields</button>' : ''}
             <button id="addListBuildings">Add List Buildings</button>
+            <button id="addSpeedRunBuildings">Add Speed Run Buildings</button>
             <button id="copyState">Copy State</button>
             <button id="pasteState">Paste State</button>
         </div>
@@ -1698,6 +1608,11 @@ const render = (state) => {
             }
         }
         state.villages = villages;
+    });
+    $('#addSpeedRunBuildings').on('click', (ele) => {
+        const villages = state.villages;
+        const pendingBuildTasks = currentVillage.pendingBuildTasks;
+        pendingBuildTasks.push(...NEW_ACCOUNT_LIST);
     });
     $('#updateFarmInterval').on('click', () => {
         const farmIntervalMinutes = {
