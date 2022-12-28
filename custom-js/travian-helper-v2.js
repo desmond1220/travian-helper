@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/25 16:54:30";
+const BUILD_TIME = "2022/12/28 23:01:45";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -241,8 +241,6 @@ const NEW_ACCOUNT_LIST = [
     { aid: 23, gid: 23, resources: { lumber: 105, clay: 135, iron: 80, crop: 25 } },
     { aid: 23, gid: 23, resources: { lumber: 135, clay: 170, iron: 105, crop: 35 } },
     { aid: 23, gid: 23, resources: { lumber: 175, clay: 220, iron: 130, crop: 45 } },
-    //Lv1 Residence
-    { aid: 31, gid: 25, resources: { lumber: 580, clay: 460, iron: 350, crop: 180 } },
     //Lv7 Marketplace
     { aid: 27, gid: 17, resources: { lumber: 170, clay: 145, iron: 250, crop: 145 } },
     { aid: 27, gid: 17, resources: { lumber: 215, clay: 190, iron: 320, crop: 190 } },
@@ -250,13 +248,22 @@ const NEW_ACCOUNT_LIST = [
     { aid: 27, gid: 17, resources: { lumber: 350, clay: 310, iron: 530, crop: 310 } },
     //Lv1 Academy
     { aid: 35, gid: 22, resources: { lumber: 220, clay: 160, iron: 90, crop: 40 } },
-    //Lv1 Smithy
+    //Lv3 Smithy
     { aid: 38, gid: 13, resources: { lumber: 180, clay: 250, iron: 500, crop: 160 } },
-    //Lv10 Academy
+    { aid: 38, gid: 13, resources: { lumber: 230, clay: 320, iron: 640, crop: 205 } },
+    { aid: 38, gid: 13, resources: { lumber: 295, clay: 410, iron: 820, crop: 260 } },
+    //Lv5 Academy
     { aid: 35, gid: 22, resources: { lumber: 280, clay: 205, iron: 115, crop: 50 } },
     { aid: 35, gid: 22, resources: { lumber: 360, clay: 260, iron: 145, crop: 65 } },
     { aid: 35, gid: 22, resources: { lumber: 460, clay: 335, iron: 190, crop: 85 } },
     { aid: 35, gid: 22, resources: { lumber: 590, clay: 430, iron: 240, crop: 105 } },
+    //Lv3 Stable
+    { aid: 34, gid: 20, resources: { lumber: 260, clay: 140, iron: 220, crop: 100 } },
+    { aid: 34, gid: 20, resources: { lumber: 335, clay: 180, iron: 280, crop: 130 } },
+    { aid: 34, gid: 20, resources: { lumber: 425, clay: 230, iron: 360, crop: 165 } },
+    //Lv1 Residence
+    { aid: 31, gid: 25, resources: { lumber: 580, clay: 460, iron: 350, crop: 180 } },
+    //Lv10 Academy
     { aid: 35, gid: 22, resources: { lumber: 755, clay: 550, iron: 310, crop: 135 } },
     { aid: 35, gid: 22, resources: { lumber: 970, clay: 705, iron: 395, crop: 175 } },
     { aid: 35, gid: 22, resources: { lumber: 1240, clay: 900, iron: 505, crop: 225 } },
