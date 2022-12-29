@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/28 23:01:45";
+const BUILD_TIME = "2022/12/30 01:39:59";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -231,6 +231,12 @@ const NEW_ACCOUNT_LIST = [
     { aid: 7, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
     { aid: 10, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
     { aid: 11, gid: 3, resources: { lumber: 280, clay: 225, iron: 85, crop: 165 } },
+    //Lv3 Crop x5
+    { aid: 8, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
+    { aid: 9, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
+    { aid: 12, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
+    { aid: 13, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
+    { aid: 15, gid: 4, resources: { lumber: 195, clay: 250, iron: 195, crop: 55 } },
     //Lv3 Barracks
     { aid: 32, gid: 19, resources: { lumber: 270, clay: 180, iron: 335, crop: 155 } },
     { aid: 32, gid: 19, resources: { lumber: 345, clay: 230, iron: 425, crop: 195 } },
@@ -1163,8 +1169,8 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2') {
             yield Utils.delayClick(!state.feature.disableDelayClick);
-            const sendTroopButton = yield Utils.waitForElement("#ok");
-            const confirmButton = yield Utils.waitForElement("#checksum");
+            const sendTroopButton = $("#ok");
+            const confirmButton = $("#checksum");
             if (sendTroopButton.length > 0) {
                 for (const troopKey of Object.keys(customFarm.troops)) {
                     if (customFarm.troops[troopKey]) {
