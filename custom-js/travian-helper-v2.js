@@ -1201,6 +1201,8 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 confirmButton[0].click();
             }
+
+            yield Utils.delayClick(!state.feature.disableDelayClick);
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
