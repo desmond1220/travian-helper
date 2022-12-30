@@ -1202,8 +1202,7 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
                 confirmButton[0].click();
             }
 
-            yield Utils.delayClick(!state.feature.disableDelayClick);
-            return;
+            yield Utils.sleep(30000);
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
             && params.get('gid') === '16' && params.get('tt') === '1') {
