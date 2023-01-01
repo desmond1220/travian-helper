@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2022/12/30 01:39:59";
+const BUILD_TIME = "2023/01/02 02:45:53";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1101,13 +1101,13 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                 yield Navigation.goToVillage(state, villageRequireEvade.id, CurrentActionEnum.EVADE);
                 return;
             }
-            if ((yield Utils.waitForElement('.error', 2000)).length > 0) {
+            if (($('.error')).length > 0) {
                 yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
                 return;
             }
             yield Utils.delayClick(!state.feature.disableDelayClick);
-            const sendTroopButton = yield Utils.waitForElement("#ok", 1000);
-            const confirmButton = yield Utils.waitForElement("#checksum", 1000);
+            const sendTroopButton = $("#ok");
+            const confirmButton = $("#checksum");
             if (sendTroopButton.length > 0) {
                 let needSendTroop = false;
                 $("#troops > tbody").find("td").each((column, td) => {
@@ -1128,16 +1128,19 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                 else {
                     delete villageRequireEvade.evadeTime;
                 }
+                state.villages = villages;
             }
             else if (confirmButton.length > 0) {
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 confirmButton[0].click();
+                state.villages = villages;
             }
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.EVADE
             && params.get('gid') === '16' && params.get('tt') === '1') {
             informTroopsEvaded(state, villageRequireEvade);
+            villageRequireEvade.evadeTime = undefined;
             delete villageRequireEvade.evadeTime;
             state.villages = villages;
             yield Utils.delayClick(!state.feature.disableDelayClick);
@@ -1201,8 +1204,8 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 confirmButton[0].click();
             }
-
             yield Utils.sleep(30000);
+            return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.CUSTOM_FARM
             && params.get('gid') === '16' && params.get('tt') === '1') {
