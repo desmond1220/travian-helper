@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2023/01/02 02:45:53";
+const BUILD_TIME = "2023/01/02 03:20:41";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1086,19 +1086,20 @@ const farm = (state, targetPrefix) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e;
+    var _d, _e, _f;
     const params = new URLSearchParams(window.location.search);
     const villages = state.villages;
-    const villageRequireEvade = Object.values(villages).filter(v => !!v.evadeTime).find(v => v.autoEvade && new Date(v.evadeTime) < new Date());
-    if (villageRequireEvade) {
+    const villageRequireEvadeId = (_d = Object.values(villages).filter(v => !!v.evadeTime).find(v => v.autoEvade && new Date(v.evadeTime) < new Date())) === null || _d === void 0 ? void 0 : _d.id;
+    if (villageRequireEvadeId) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
             yield Utils.delayClick(!state.feature.disableDelayClick);
             $('a[href="/build.php?id=39&gid=16&tt=2"]')[0].click();
             return;
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && params.get('gid') === '16' && params.get('tt') === '2') {
-            if (state.currentVillageId !== villageRequireEvade.id) {
-                yield Navigation.goToVillage(state, villageRequireEvade.id, CurrentActionEnum.EVADE);
+            const village = villages[villageRequireEvadeId];
+            if (state.currentVillageId !== village.id) {
+                yield Navigation.goToVillage(state, village.id, CurrentActionEnum.EVADE);
                 return;
             }
             if (($('.error')).length > 0) {
@@ -1117,16 +1118,16 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                         needSendTroop = true;
                     }
                 });
-                if (((_d = villageRequireEvade.evadeRaidPosition) === null || _d === void 0 ? void 0 : _d.x) && ((_e = villageRequireEvade.evadeRaidPosition) === null || _e === void 0 ? void 0 : _e.y)) {
-                    $("#xCoordInput").val(villageRequireEvade.evadeRaidPosition.x);
-                    $("#yCoordInput").val(villageRequireEvade.evadeRaidPosition.y);
+                if (((_e = village.evadeRaidPosition) === null || _e === void 0 ? void 0 : _e.x) && ((_f = village.evadeRaidPosition) === null || _f === void 0 ? void 0 : _f.y)) {
+                    $("#xCoordInput").val(village.evadeRaidPosition.x);
+                    $("#yCoordInput").val(village.evadeRaidPosition.y);
                 }
                 if (needSendTroop) {
                     $('.radio')[2].click();
                     sendTroopButton[0].click();
                 }
                 else {
-                    delete villageRequireEvade.evadeTime;
+                    delete village.evadeTime;
                 }
                 state.villages = villages;
             }
@@ -1139,9 +1140,10 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else if (state.currentPage === CurrentPageEnum.BUILDING && state.currentAction === CurrentActionEnum.EVADE
             && params.get('gid') === '16' && params.get('tt') === '1') {
-            informTroopsEvaded(state, villageRequireEvade);
-            villageRequireEvade.evadeTime = undefined;
-            delete villageRequireEvade.evadeTime;
+            const village = villages[villageRequireEvadeId];
+            informTroopsEvaded(state, village);
+            village.evadeTime = undefined;
+            delete village.evadeTime;
             state.villages = villages;
             yield Utils.delayClick(!state.feature.disableDelayClick);
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
@@ -1159,11 +1161,11 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f;
+    var _g;
     const params = new URLSearchParams(window.location.search);
     const villages = state.villages;
     const village = villages[state.currentVillageId];
-    const customFarm = (_f = village.customFarms) === null || _f === void 0 ? void 0 : _f[idx];
+    const customFarm = (_g = village.customFarms) === null || _g === void 0 ? void 0 : _g[idx];
     if (customFarm) {
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '2') {
             yield Utils.delayClick(!state.feature.disableDelayClick);
