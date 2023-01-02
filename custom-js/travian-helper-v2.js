@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2023/01/02 03:20:41";
+const BUILD_TIME = "2023/01/02 12:30:06";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -985,6 +985,35 @@ const build = (state) => __awaiter(void 0, void 0, void 0, function* () {
 const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
     if (new Date(state.nextScoutTime) < new Date()) {
         const params = new URLSearchParams(window.location.search);
+        let shortcut = undefined;
+        $('#sidebarBoxLinklist li').each((_, ele) => {
+            const name = $(ele).find('.name').text().trim();
+            const href = $(ele).find('a').attr('href');
+            if (name === "Farm List") {
+                shortcut = $(`a[href='${href}']`)[0];
+                return;
+            }
+        });
+        if (!(state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99')) {
+            if (shortcut) {
+                shortcut.click();
+            }
+            else {
+                if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') !== '99') {
+                    yield Utils.delayClick(!state.feature.disableDelayClick);
+                    $('a[href="/build.php?id=39&gid=16&tt=99"]')[0].click();
+                    return;
+                }
+                else if (state.currentPage === CurrentPageEnum.TOWN) {
+                    yield Navigation.goToBuilding(state, 39, 16, CurrentActionEnum.SCOUT);
+                    return;
+                }
+                else {
+                    yield Navigation.goToTown(state, CurrentActionEnum.SCOUT);
+                    return;
+                }
+            }
+        }
         if (state.currentPage === CurrentPageEnum.BUILDING && params.get('id') === '39' && params.get('gid') === '16' && params.get('tt') === '99') {
             const startButtonEle = $('.startButton[value=Start]').filter((_, button) => {
                 return $(button).parent().parent().find('.listName').find('span').text() === "Scout";
@@ -993,7 +1022,7 @@ const scout = (state) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Utils.delayClick(!state.feature.disableDelayClick);
                 startButtonEle[i].click();
             }
-            state.nextScoutTime = Utils.addToDate(new Date(), 0, Utils.randInt(30, 40), 0);
+            state.nextScoutTime = Utils.addToDate(new Date(), 0, 1, 0);
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
             return;
         }
