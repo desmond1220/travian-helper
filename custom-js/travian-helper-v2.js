@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var _a, _b;
-const BUILD_TIME = "2023/01/02 12:30:06";
+const BUILD_TIME = "2023/01/02 21:45:17";
 const RUN_INTERVAL = 10000;
 const GID_NAME_MAP = {
     "-1": "Unknown",
@@ -1156,7 +1156,7 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
                     sendTroopButton[0].click();
                 }
                 else {
-                    delete village.evadeTime;
+                    village.evadeTime = Utils.addToDate(new Date(), 9999999, 0, 0);
                 }
                 state.villages = villages;
             }
@@ -1171,8 +1171,7 @@ const checkAutoEvade = (state) => __awaiter(void 0, void 0, void 0, function* ()
             && params.get('gid') === '16' && params.get('tt') === '1') {
             const village = villages[villageRequireEvadeId];
             informTroopsEvaded(state, village);
-            village.evadeTime = undefined;
-            delete village.evadeTime;
+            village.evadeTime = Utils.addToDate(new Date(), 9999999, 0, 0);
             state.villages = villages;
             yield Utils.delayClick(!state.feature.disableDelayClick);
             yield Navigation.goToFields(state, CurrentActionEnum.IDLE);
