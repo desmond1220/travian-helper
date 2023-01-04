@@ -807,20 +807,20 @@ const alertAttack = (state, village, attackTime) => {
             });
         }
     }
-    else if (state.telegramChatId && state.telegramToken) {
+    if (state.telegramChatId && state.telegramToken) {
         if (village) {
             if (!village.attackAlertBackoff || new Date(village.attackAlertBackoff) < new Date()) {
                 state.feature.debug && console.log(`Send alert for attack at village ${village.name}`);
                 village.attackAlertBackoff = Utils.addToDate(new Date(), 0, 5, 0);
                 state.villages = villages;
-                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Village ${village.name} under attack ${attackTime && `at ${Utils.formatDate(attackTime)}`}`);
+                fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=[${Utils.formatDate(new Date())}] Village ${village.name} under attack ${attackTime && `at ${Utils.formatDate(attackTime)}`}`);
             }
             else {
                 state.feature.debug && console.log(`Not alerting attack due to backoff at ${Utils.formatDate(village.attackAlertBackoff)}`);
             }
         }
         else {
-            fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=Village is under attack`);
+            fetch(`https://api.telegram.org/bot${state.telegramToken}/sendMessage?chat_id=${state.telegramChatId}&text=[${Utils.formatDate(new Date())}] Village is under attack`);
         }
     }
 };
