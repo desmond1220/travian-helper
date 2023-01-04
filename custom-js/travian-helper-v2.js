@@ -781,7 +781,7 @@ const alertAttack = (state, village, attackTime) => {
                 state.feature.debug && console.log(`Send alert for attack at village ${village.name}`);
                 village.attackAlertBackoff = Utils.addToDate(new Date(), 0, 5, 0);
                 state.villages = villages;
-                const message = `[${$('.playerName').text()}] >> Current Time: ${Utils.formatDate(new Date())} << \nVillage ${village.name} under attack${attackTime ? ` at ${Utils.formatDate(attackTime)}` : ""}`;
+                const message = `[${$('.playerName').text()}] \n>> Current Time: ${Utils.formatDate(new Date())} << \nVillage ${village.name} under attack${attackTime ? ` at ${Utils.formatDate(attackTime)}` : ""}`;
                 fetch(state.discordWebhookUrl, {
                     method: 'POST',
                     headers: {
@@ -796,7 +796,7 @@ const alertAttack = (state, village, attackTime) => {
             }
         }
         else {
-            const message = `[${$('.playerName').text()}] >> Current Time: ${Utils.formatDate(new Date())} << \nVillage is under attack`;
+            const message = `[${$('.playerName').text()}] \n>> Current Time: ${Utils.formatDate(new Date())} << \nVillage is under attack`;
             fetch(state.discordWebhookUrl, {
                 method: 'POST',
                 headers: {
