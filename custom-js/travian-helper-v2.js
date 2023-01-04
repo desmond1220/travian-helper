@@ -807,6 +807,7 @@ const alertAttack = (state, village, attackTime) => {
             });
         }
     }
+
     if (state.telegramChatId && state.telegramToken) {
         if (village) {
             if (!village.attackAlertBackoff || new Date(village.attackAlertBackoff) < new Date()) {
