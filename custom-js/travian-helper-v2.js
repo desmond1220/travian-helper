@@ -1272,7 +1272,7 @@ const executeCustomFarm = (state, idx) => __awaiter(void 0, void 0, void 0, func
                     if (customFarm.troops[troopKey]) {
                         state.feature.debug && (console.log("Troop Key: ", troopKey));
                         const troopInputEle = $(`input[name="${troopKey}"]`);
-                        if (troopInputEle.prop('disabled') || parseInt($(`input[name=${troopKey}]`).parent().find('a').text().replace(/\D/g, "")) < parseInt(customFarm.troops[troopKey])) {
+                        if (troopInputEle.prop('disabled') || parseInt($(`input[name="${troopKey}"]`).parent().find('a').text().replace(/\D/g, "")) < parseInt(customFarm.troops[troopKey])) {
                             village.customFarms[idx].nextCustomFarmTime = Utils.addToDate(new Date(), 0, 1, 0);
                             state.villages = villages;
                             yield Navigation.goToTown(state, CurrentActionEnum.IDLE);
